@@ -1,0 +1,177 @@
+#! /usr/bin/env bash
+#
+#   Copyright (c) 2018 Nat! - Mulle kybernetiK
+#   All rights reserved.
+#
+#   Redistribution and use in source and binary forms, with or without
+#   modification, are permitted provided that the following conditions are met:
+#
+#   Redistributions of source code must retain the above copyright notice, this
+#   list of conditions and the following disclaimer.
+#
+#   Redistributions in binary form must reproduce the above copyright notice,
+#   this list of conditions and the following disclaimer in the documentation
+#   and/or other materials provided with the distribution.
+#
+#   Neither the name of Mulle kybernetiK nor the names of its contributors
+#   may be used to endorse or promote products derived from this software
+#   without specific prior written permission.
+#
+#   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+#   AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+#   IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+#   ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+#   LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+#   CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+#   SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+#   INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+#   CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+#   ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+#   POSSIBILITY OF SUCH DAMAGE.
+#
+[ "${TRACE}" = "YES" -o "${MULLE_RUN_TEST_TRACE}" = "YES" ] && set -x && : "$0" "$@"
+
+
+usage()
+{
+   [ $# -ne 0 ] && log_error "$*"
+
+   cat <<EOF >&2
+Usage:
+   ${MULLE_EXECUTABLE_NAME} [flags] -- [arguments for mulle-clang]*
+
+   Run tests. Commands take options. Some commands take additional build and
+   run options. Notice the -- separator.
+
+Flags:
+EOF
+
+   options_technical_flags_usage " : " | sort >&2
+
+   echo "" >&2
+
+   exit 1
+}
+
+
+main()
+{
+   while [ $# -ne 0 ]
+   do
+      if options_technical_flags "$1"
+      then
+         shift
+         continue
+      fi
+
+      case "$1" in
+         -h|--help|help)
+            usage
+         ;;
+
+         --)
+            break
+         ;;
+
+         -*)
+            usage "${MULLE_EXECUTABLE_FAIL_PREFIX}: Unknown flag \"$1\""
+         ;;
+
+         *)
+            break
+         ;;
+      esac
+
+      shift
+   done
+
+   options_setup_trace "${MULLE_TRACE}"
+
+   local RVAL
+
+   local libdir
+   local dependencydir
+   local includedir
+   local rootdir
+
+   rootdir="${PWD}"
+   libdir="lib"
+   includedir="include"
+   dependencydir="${DEPENDENCY_DIR:-../dependency}"
+
+   r_absolutepath "${dependencydir}"
+   dependencydir="${RVAL}"
+   r_absolutepath "${libdir}"
+   libdir="${RVAL}"
+   r_absolutepath "${includedir}"
+   includedir="${RVAL}"
+
+   local testfile
+   local srcname
+   local exename
+   local directory
+
+   IFS="
+"
+   for testfile in `find [1]* -type f -name "*.m" -print`
+   do
+   	IFS="${DEFAULTIFS}"
+      (
+         r_fast_basename "${testfile}"
+         srcname="${RVAL}"
+         r_fast_dirname "${testfile}"
+         directory="${RVAL}"
+         r_extensionless_basename "${testfile}"
+      	exename="${RVAL}.exe"
+
+         log_info "${srcname}"
+
+      	cd "${directory}" &&
+      	exekutor mulle-clang -isystem "${includedir}" \
+               	            -isystem "${dependencydir}/Debug/include" \
+               	            -isystem "${dependencydir}/include" \
+               	            "-I${rootdir}" \
+                              -Wno-objc-root-class \
+                              -DOBJC_NO_GC \
+                              -D__OBJC2__ \
+               	            -std=gnu99 \
+               	            -O0 \
+               	            -g \
+               	            "-L${libdir}" \
+               	            -o "${exename}" \
+               	            "${srcname}" \
+               	            -lmulle-objc-compat-standalone \
+                              "$@" &&
+   		LD_LIBRARY_PATH="${libdir}" ./"${exename}"
+      ) || exit 1
+   done
+   IFS="${DEFAULTIFS}"
+}
+
+
+
+#
+#
+#
+_init()
+{
+   MULLE_BASHFUNCTIONS_LIBEXEC_DIR="`mulle-bashfunctions-env libexec-dir 2> /dev/null`"
+   [ -z "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}" ] && \
+      echo "mulle-bashfunctions-env not installed" >&2 && \
+      exit 1
+
+   . "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}/mulle-bashfunctions.sh" || exit 1
+
+   set -o pipefail
+}
+
+
+# mingw stuff
+case "$PATH" in
+   '\\'*)
+      PATH="${PATH//\\/\/}"
+   ;;
+esac
+
+_init
+main "$@"

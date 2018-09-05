@@ -1,0 +1,69 @@
+{
+    "version": "2.0.0",
+   "tasks": [
+      {
+         "label": "Debug",
+         "type": "shell",
+         "command": "mulle-sde",
+         "problemMatcher": {
+            "base": "$gcc",
+            "fileLocation": [
+               "relative",
+               "${workspaceFolder}/build/Debug"
+            ],
+            "pattern": {
+               "regexp": "^(.*):(\\d+):(\\d+):\\s+(warning|error):\\s+(.*)$",
+               "file": 1,
+               "line": 2,
+               "column": 3,
+               "severity": 4,
+               "message": 5
+            }
+         },
+         "args": [
+            "craft",
+            "--debug"
+         ],
+         "group": {
+            "kind": "build",
+            "isDefault": true
+         }
+      },
+      {
+         "label": "Release",
+         "type": "shell",
+         "isBuildCommand": true,
+         "command": "mulle-sde",
+         "problemMatcher": {
+            "base": "$gcc",
+            "fileLocation": [
+               "relative"
+            ]
+         },
+         "options": {
+            "cwd": "${workspaceRoot}/build/Release"
+         },
+         "args": [
+            "craft"
+         ]
+      },
+      {
+         "label": "Update",
+         "type": "shell",
+         "command": "mulle-sde",
+         "args": [
+            "update"
+         ],
+         "problemMatcher": []
+      },
+      {
+         "label": "Clean",
+         "type": "shell",
+         "command": "mulle-sde",
+         "args": [
+            "clean"
+         ],
+         "problemMatcher": []
+      }
+   ]
+}

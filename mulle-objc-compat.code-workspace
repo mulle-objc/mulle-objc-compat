@@ -1,0 +1,19 @@
+{
+"folders": [
+	{
+		"path": "."
+	}
+],
+"settings": {
+   "files.associations": {
+      "*.tcc": "c",
+      "typeinfo": "c",
+      "tuple": "c",
+      "array": "c",
+      "bitset": "c",
+      "initializer_list": "c",
+      "utility": "c",
+      "string_view": "c"
+   }
+}
+}

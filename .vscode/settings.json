@@ -1,0 +1,23 @@
+{
+   "files.associations": {
+      "bitset": "c",
+      "typeinfo": "c",
+      "array": "c",
+      "initializer_list": "c",
+      "utility": "c",
+      "chrono": "c",
+      "limits": "c",
+      "algorithm": "c",
+      "ratio": "c",
+      "system_error": "c",
+      "type_traits": "c",
+      "list": "c",
+      "istream": "c",
+      "optional": "c",
+      "ostream": "c",
+      "tuple": "c",
+      "*.tcc": "c",
+      "string_view": "c",
+      "functional": "c"
+   }
+}

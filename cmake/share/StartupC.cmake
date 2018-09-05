@@ -1,0 +1,43 @@
+# can be included multiple times
+
+if( MULLE_TRACE_INCLUDE)
+   message( STATUS "# Include \"${CMAKE_CURRENT_LIST_FILE}\"" )
+endif()
+
+if( STARTUP_SOURCES)
+   if( NOT STARTUP_LIBRARY_NAME)
+      set( STARTUP_LIBRARY_NAME "mulle-objc-compat-startup")
+   endif()
+   if( NOT STARTUP_DEFINITIONS)
+      set( STARTUP_DEFINITIONS ${MULLE_OBJC_COMPAT_DEFINITIONS})
+   endif()
+
+   add_library( ${STARTUP_LIBRARY_NAME} STATIC
+      ${STARTUP_SOURCES}
+   )
+   set_property( TARGET ${STARTUP_LIBRARY_NAME} PROPERTY CXX_STANDARD 11)
+
+   target_compile_definitions( ${STARTUP_LIBRARY_NAME} PRIVATE ${STARTUP_DEFINITIONS})
+
+   set( INSTALL_LIBRARY_TARGETS
+      ${INSTALL_LIBRARY_TARGETS}
+      ${STARTUP_LIBRARY_NAME}
+   )
+
+   set( STARTUP_LIBRARY
+      $<TARGET_FILE:${STARTUP_LIBRARY_NAME}>
+   )
+else()
+   if( NOT STARTUP_LIBRARY)
+      if( STARTUP_LIBRARY_NAME)
+         find_library( STARTUP_LIBRARY NAMES ${CMAKE_STATIC_LIBRARY_PREFIX}${STARTUP_LIBRARY_NAME}${CMAKE_STATIC_LIBRARY_SUFFIX} ${STARTUP_LIBRARY_NAME})
+      endif()
+   endif()
+
+endif()
+
+message( STATUS "STARTUP_LIBRARY_NAME is ${STARTUP_LIBRARY_NAME}")
+message( STATUS "STARTUP_LIBRARY is ${STARTUP_LIBRARY}")
+
+
+include( StartupCAux OPTIONAL)
