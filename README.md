@@ -9,7 +9,7 @@ This makes porting of existing programs that use Apple runtime functions easier.
 
 * This library hasn't been scrutinized for thread-safety.
 * Some functionality is missing that mulle-objc does not support. E.g. "weak variables".
-* Message sending via `objc_msgSend` uses the mulle-objc MetaABI and therefore is only compatible in the case, where there is only one pointer sized parameter and a pointer sized return value.
+* Message sending via `objc_msgSend` uses the [mulle-objc MetaABI](https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html) and therefore is only compatible in the case, where there is only one pointer sized parameter and a pointer sized return value.
 
 
 ### Register unknown selectors before using class_addMethod and class_replaceMethod
@@ -25,14 +25,12 @@ It is fairly conventional to write various `objc_msgSend0`,
 and return values. These functions are not part of the library. `objc_msgSend` 
 is defined though.
 
-Use the [mulle-objc MetaABI]
-(https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html)
+Use the [mulle-objc MetaABI](https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html)
 convention to pass parameters and inspect return values.
 
 ### Dealing with `objc_msgSend_stret`
 
-Use the [mulle-objc MetaABI]
-(https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html) and objc_msgSend directly. 
+Use the [mulle-objc MetaABI](https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html) and objc_msgSend directly. 
 
 ### Protocols in mulle-objc are almost only syntax
 
