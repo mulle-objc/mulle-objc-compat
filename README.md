@@ -2,22 +2,23 @@
 
 This library maps
 [Apple runtime](https://developer.apple.com/documentation/objectivec/objective_c_runtime?language=objc)
-functions to their mulle-objc counterparts.
-This makes porting of existing programs that use runtime functions easier.
+functions to their [mulle-objc](//mulle-objc.github.io) counterparts.
+This makes porting of existing programs that use Apple runtime functions easier.
 
 ## Limitations
 
-* This library is mostly NOT thread-safe.
-* Some functionality is missing that mulle-objc does not support. E.g. like weak variables.
-* Message sending via `objc_msgSend` and friends can only service selectors that take one integer or pointer/object parameter
+* This library hasn't been scrutinized for thread-safety.
+* Some functionality is missing that mulle-objc does not support. E.g. "weak variables".
+* Message sending via `objc_msgSend` uses the mulle-objc MetaABI and therefore is only compatible in the case, where there is only one pointer sized parameter and a pointer sized return value.
 
-## Register unknown selectors before using class_addMethod and class_replaceMethod
+
+### Register unknown selectors before using class_addMethod and class_replaceMethod
 
 The use of `@selector( undefinedByAll)` does not give the runtime enough 
 information to produce proper methods. Therefore you must `sel_registerName` 
 before usage.
 
-## Dealing with `objc_msgSend`
+### Dealing with `objc_msgSend`
 
 It is fairly conventional to write various `objc_msgSend0`,
 `objc_msgSend1`, `objc_msgSend2` functions that deal with varying parameters
@@ -28,12 +29,12 @@ Use the [mulle-objc MetaABI]
 (https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html)
 convention to pass parameters and inspect return values.
 
-## Dealing with `objc_msgSend_stret`
+### Dealing with `objc_msgSend_stret`
 
 Use the [mulle-objc MetaABI]
 (https://www.mulle-kybernetik.com/weblog/2015/mulle_objc_meta_call_convention.html) and objc_msgSend directly. 
 
-## Protocols in mulle-objc are almost only syntax
+### Protocols in mulle-objc are almost only syntax
 
 This means:
 
@@ -43,13 +44,13 @@ This means:
 * you can not message protocols
 
 
-## There is no enveloping NSAutoreleasePool around +load in mulle-objc
+### There is no enveloping NSAutoreleasePool around +load in mulle-objc
 
 If you create ephemeral instances in your `+load` method,
 you should wrap the code yourself inside an `NSAutoreleasePool`.
 
 
-## You can't go as crazy in +initialize
+### You can't go as crazy in +initialize
 
 * do not call `[super initialize]`, which is pointless anyway.
 * do not message subclasses
