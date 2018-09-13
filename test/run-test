@@ -87,8 +87,6 @@ main()
 
    options_setup_trace "${MULLE_TRACE}"
 
-   local RVAL
-
    local libdir
    local dependencydir
    local includedir
@@ -106,6 +104,17 @@ main()
    r_absolutepath "${includedir}"
    includedir="${RVAL}"
 
+   local RVAL
+   local sdkpath
+
+   case "${MULLE_UNAME}" in
+      darwin)
+         sdkpath="-isysroot '`xcrun --show-sdk-path`'"
+         RPATH_FLAGS="-Wl,-rpath '${libdir}'"
+      ;;
+   esac
+
+
    local testfile
    local srcname
    local exename
@@ -113,7 +122,7 @@ main()
 
    IFS="
 "
-   for testfile in `find [1]* -type f -name "*.m" -print`
+   for testfile in `find [0-9][6-9]* -type f -name "*.m" -print`
    do
    	IFS="${DEFAULTIFS}"
       (
@@ -127,27 +136,28 @@ main()
          log_info "${srcname}"
 
       	cd "${directory}" &&
-      	exekutor mulle-clang -isystem "${includedir}" \
-               	            -isystem "${dependencydir}/Debug/include" \
-               	            -isystem "${dependencydir}/include" \
-               	            "-I${rootdir}" \
+      	eval_exekutor mulle-clang -isystem "'${includedir}'" \
+               	            -isystem "'${dependencydir}/Debug/include'" \
+               	            -isystem "'${dependencydir}/include'" \
+               	            "-I'${rootdir}'" \
+                              "${sdkpath}" \
                               -Wno-objc-root-class \
                               -DOBJC_NO_GC \
                               -D__OBJC2__ \
                	            -std=gnu99 \
                	            -O0 \
                	            -g \
-               	            "-L${libdir}" \
-               	            -o "${exename}" \
-               	            "${srcname}" \
+               	            "-L'${libdir}'" \
+               	            -o "'${exename}'" \
+               	            "'${srcname}'" \
                	            -lmulle-objc-compat-standalone \
-                              "$@" &&
+                              "${RPATH_FLAGS}" \
+                              &&
    		LD_LIBRARY_PATH="${libdir}" ./"${exename}"
       ) || exit 1
    done
    IFS="${DEFAULTIFS}"
 }
-
 
 
 #

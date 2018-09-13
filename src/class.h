@@ -59,8 +59,8 @@ static inline BOOL   class_conformsToProtocol(Class cls, PROTOCOL protocol)
 {
    struct _mulle_objc_classpair   *pair;
 
-   pair = _mulle_objc_class_get_classpair( (struct _mulle_objc_class *) cls);
-   return( mulle_objc_classpair_conformsto_protocolid( pair, protocol));
+   pair = mulle_objc_class_get_classpair( (struct _mulle_objc_class *) cls);
+   return( __mulle_objc_classpair_conformsto_protocolid( pair, MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS, protocol));
 }
 
 BOOL   class_addIvar(Class cls, char *name, size_t size, uint8_t alignment, char *types);
@@ -90,7 +90,6 @@ static inline Class   class_getSuperclass( Class cls)
 }
 
 
-
 Class   class_setSuperclass( Class cls, Class superclass);
 
 
@@ -111,15 +110,10 @@ static inline size_t   class_getInstanceSize( Class cls)
    return( mulle_objc_class_get_instancesize( (struct _mulle_objc_class *) cls));
 }
 
+// this calls initialize
+IMP  class_getMethodImplementation( Class cls, SEL sel);
 
-static inline IMP  class_getMethodImplementation( Class cls, SEL sel)
-{
-   if( ! cls || ! sel)
-      return( (IMP) 0);
-   return( (IMP) _mulle_objc_class_lookup_implementation( (struct _mulle_objc_class *) cls, (mulle_objc_methodid_t) sel));
-}
-
-static inline IMP class_getMethodImplementation_stret( Class cls, SEL sel)
+static inline IMP   class_getMethodImplementation_stret( Class cls, SEL sel)
 {
    return( class_getMethodImplementation( cls, sel));
 }

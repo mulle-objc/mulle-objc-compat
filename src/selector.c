@@ -61,7 +61,7 @@ SEL   sel_registerName( char *str)
    desc = _mulle_objc_universe_unfailingregister_descriptor( universe, dup);
    if( desc != dup)
    {
-      // collision 
+      // collision
       if( n >= 16)
          _mulle_allocator_free( allocator, dup->signature);
       _mulle_allocator_free( allocator, dup->name);

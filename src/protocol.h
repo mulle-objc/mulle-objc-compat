@@ -7,7 +7,7 @@
 #include "property.h"
 
 
-typedef struct _mulle_objc_protocol   *Protocol;
+typedef struct _mulle_objc_protocol   Protocol;
 
 
 /*
@@ -17,28 +17,82 @@ typedef struct _mulle_objc_protocol   *Protocol;
  * as a Protocol *, but referenced only as PROTOCOL.
  */
 
-/* runtime protocol support */
-PROTOCOL  objc_getProtocol( char *name);
-PROTOCOL  *objc_copyProtocolList(unsigned int *outCount);
-Protocol *objc_allocateProtocol(const char *name);
-void objc_registerProtocol(Protocol *proto);
 
+//
+// once registered the "Protocol" will not be retrievable from the runtime
+// with objc_.. functions. All Method/Property functions are just placebos.
+// Any of the protocol query functions except name are placebos.
+// Query the class for protocol conformance.
+//
 
-/* protocol struct support (initialization only) */
+/* protocol struct support (initialization only), this is not the same
+   as @protocol() which is PROTOCOL which is a hash value
+ */
+Protocol *objc_getProtocol( char *name);
 
-void protocol_addMethodDescription( Protocol *proto, SEL name, char *types, BOOL isRequiredMethod, BOOL isInstanceMethod);
+Protocol *objc_allocateProtocol( char *name);
+void objc_registerProtocol( Protocol *proto);
+void protocol_addMethodDescription( Protocol *proto, 
+                                    SEL name, 
+                                    char *types, 
+                                    BOOL isRequiredMethod, 
+                                    BOOL isInstanceMethod);
 void protocol_addProtocol( Protocol *proto, PROTOCOL addition);
-void protocol_addProperty( Protocol *proto, char *name, const objc_property_attribute_t *attributes, unsigned int attributeCount, BOOL isRequiredProperty, BOOL isInstanceProperty);
-char *protocol_getName( Protocol *proto);
+void protocol_addProperty( Protocol *proto, 
+                           char *name, 
+                           objc_property_attribute_t *attributes, 
+                           unsigned int attributeCount, 
+                           BOOL isRequiredProperty, 
+                           BOOL isInstanceProperty);
 
-/* PROTOCOL support */
+static inline BOOL   protocol_conformsToProtocol( Protocol *proto, 
+                                                  PROTOCOL other)
+{
+   if( ! proto)
+      return( NO);
+   return( _mulle_objc_protocol_get_protocolid( proto) == other);
+}
 
-BOOL protocol_isEqual( PROTOCOL proto, PROTOCOL other);
-struct objc_method_description protocol_copyMethodDescriptionList( PROTOCOL proto, BOOL isRequiredMethod, BOOL isInstanceMethod, unsigned int *outCount);
-struct objc_method_description protocol_getMethodDescription( PROTOCOL proto, SEL aSel, BOOL isRequiredMethod, BOOL isInstanceMethod);
-objc_property_t *protocol_copyPropertyList( PROTOCOL proto, unsigned int *outCount);
-objc_property_t  protocol_getProperty( PROTOCOL proto, char *name, BOOL isRequiredProperty, BOOL isInstanceProperty);
-PROTOCOL *protocol_copyProtocolList( PROTOCOL proto, unsigned int *outCount);
-BOOL   protocol_conformsToProtocol( PROTOCOL proto,  PROTOCOL other);
+static inline char *protocol_getName( Protocol *proto)
+{
+   if( ! proto)
+      return( NULL);
+   return( _mulle_objc_protocol_get_name( proto));
+}
+
+//
+// none of this is really supported as protocol in mulle-objc are
+// mostly just syntax constructs. The only tangible data left at
+// runtime is the name and the selector
+//
+struct objc_method_description *
+   protocol_copyMethodDescriptionList( Protocol *proto, 
+                                       BOOL isRequiredMethod, 
+                                       BOOL isInstanceMethod, 
+                                       unsigned int *outCount);
+struct objc_method_description 
+    protocol_getMethodDescription( Protocol *proto, 
+                                   SEL aSel, 
+                                   BOOL isRequiredMethod, 
+                                   BOOL isInstanceMethod);
+objc_property_t *protocol_copyPropertyList( Protocol *proto, 
+                                            unsigned int *outCount);
+objc_property_t  protocol_getProperty( Protocol *proto, 
+                                       char *name, 
+                                       BOOL isRequiredProperty, 
+                                       BOOL isInstanceProperty);
+
+PROTOCOL *protocol_copyProtocolList( Protocol *proto, 
+                                     unsigned int *outCount);
+
+Protocol **objc_copyProtocolList(unsigned int *outCount);
+
+
+static inline BOOL protocol_isEqual( Protocol *proto, Protocol *other)
+{
+   return( proto == other);
+}
+
+
 
 #endif

@@ -5,6 +5,7 @@
 
 #include "class.h"
 
+
 // convert objc_objectptr_t to id, callee must take ownership.
 static inline id objc_retainedObject(void *pointer) { return (id) pointer; }
 
@@ -24,11 +25,11 @@ static inline Class    object_getClass( id obj)
 }
 
 // not atomic in mulle-objc!
-static inline Class   object_setClass(id obj, Class cls)
+static inline Class   object_setClass( id obj, Class cls)
 {
    Class   old;
 
-   old = (Class) mulle_objc_object_get_isa( obj);
+   old = object_getClass( obj);
    if( old)
       _mulle_objc_object_set_isa( obj, (struct _mulle_objc_class *) cls);
    return( old);
@@ -36,7 +37,7 @@ static inline Class   object_setClass(id obj, Class cls)
 
 static inline id   class_createInstance( Class cls, size_t extraBytes)
 {
-    return( (id) mulle_objc_infraclass_alloc_instance_extra( cls, extraBytes, NULL));
+    return( (id) mulle_objc_infraclass_alloc_instance_extra( cls, extraBytes));
 }
 
 
@@ -62,15 +63,15 @@ id   object_copy( id obj, size_t size);
 
 static inline id   object_dispose( id obj)
 {
-   objc_destructInstance( obj);    
-   mulle_objc_object_free( (struct _mulle_objc_object *) obj, NULL);
+   objc_destructInstance( obj);
+   mulle_objc_object_free( (struct _mulle_objc_object *) obj);
    return( nil);
 }
 
 
 static inline char   *object_getClassName( id obj)
 {
-   return( (char *) class_getName( (Class) mulle_objc_object_get_isa( obj)));
+   return( (char *) class_getName( object_getClass( obj)));
 }
 
 
@@ -78,7 +79,7 @@ static inline void   object_setIvar( id obj, Ivar ivar, id value)
 {
    if( ! obj || ! ivar)
       return;
-      
+
    _mulle_objc_object_set_pointervalue_for_ivar( obj, ivar, value);
 }
 
@@ -87,7 +88,7 @@ static inline id    object_getIvar( id obj, Ivar ivar)
 {
    if( ! obj || ! ivar)
       return( nil);
-      
+
    return( _mulle_objc_object_get_pointervalue_for_ivar( obj, ivar));
 }
 
@@ -109,14 +110,14 @@ static inline Class   gdb_class_getClass( Class cls)
    s = _mulle_objc_class_get_name( (struct _mulle_objc_class *) cls);
    if( ! s || ! s[ 0])
       return( Nil);
-   
-   return( (Class) objc_getClass( s));  // diffres in that it will do the callback
+
+   return( (Class) objc_getClass( s));  // differs in that it will do the callback
 }
 
 
 static inline Class   gdb_object_getClass( id obj)
 {
-   if( ! obj) 
+   if( ! obj)
      return( Nil);
    return( gdb_class_getClass( (Class) _mulle_objc_object_get_isa( obj)));
 }

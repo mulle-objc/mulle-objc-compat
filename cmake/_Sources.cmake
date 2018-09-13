@@ -11,6 +11,7 @@ src/mulle-objc-compat.c
 src/object.c
 src/property.c
 src/protocol.c
+src/runtime.c
 src/selector.c
 )
 

@@ -1,6 +1,8 @@
 #include "class.h"
 
 #include <assert.h>
+#include <errno.h>
+#include <stdlib.h>
 
 
 Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
@@ -27,7 +29,6 @@ Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
       return( Nil);
    }
    mulle_objc_universe_unfailingadd_gift( universe, name);
-
 
    return( mulle_objc_classpair_get_infraclass( classpair));
 }
@@ -57,7 +58,9 @@ void   objc_registerClassPair( Class infra)
 }
 
 
-// don't do it after you registered
+//
+// don't do it, s
+//
 void   objc_disposeClassPair( Class cls)
 {
    struct _mulle_objc_universe    *universe;
@@ -67,14 +70,18 @@ void   objc_disposeClassPair( Class cls)
    if( ! cls)
       return;
 
-   allocator = _mulle_objc_infraclass_get_allocator( cls);
+   universe  = _mulle_objc_infraclass_get_universe( cls);
+   allocator = _mulle_objc_universe_get_allocator( universe);
    classpair = _mulle_objc_infraclass_get_classpair( cls);
-   _mulle_allocator_free( allocator, classpair);
+
+   mulle_objc_universe_remove_infraclass( universe, cls);
+   mulle_objc_classpair_free( classpair, allocator);
 }
 
 
-static struct _mulle_objc_methodlist  *universe_duplicate_methodlist( struct _mulle_objc_universe  *universe,
-      struct _mulle_objc_methodlist *list)
+static struct _mulle_objc_methodlist  *
+   universe_duplicate_methodlist( struct _mulle_objc_universe  *universe,
+                                  struct _mulle_objc_methodlist *list)
 {
    unsigned int                    n;
    struct _mulle_objc_methodlist   *dup;
@@ -84,6 +91,7 @@ static struct _mulle_objc_methodlist  *universe_duplicate_methodlist( struct _mu
    memcpy( dup, list, mulle_objc_sizeof_methodlist( n));
    return( dup);
 }
+
 
 void   class_copy_methodlists( struct _mulle_objc_class *dst,
                                struct _mulle_objc_class *cls)
@@ -141,8 +149,9 @@ static void   infraclass_copy_ivarlists( struct _mulle_objc_infraclass *dst,
 }
 
 
-static struct _mulle_objc_propertylist  *universe_duplicate_propertylist( struct _mulle_objc_universe *universe,
-      struct _mulle_objc_propertylist *list)
+static struct _mulle_objc_propertylist  *
+   universe_duplicate_propertylist( struct _mulle_objc_universe *universe,
+                                    struct _mulle_objc_propertylist *list)
 {
    unsigned int                      n;
    struct _mulle_objc_propertylist   *dup;
@@ -294,8 +303,10 @@ Class   objc_lookUpClass( char *name)
     mulle_objc_classid_t          classid;
 
     if( ! name)
+    {
+       errno = EINVAL;
        return( Nil);
-
+    }
     universe = mulle_objc_get_universe();
     classid  = mulle_objc_classid_from_string( name);
     return( _mulle_objc_universe_fastlookup_infraclass( universe, classid));
@@ -308,7 +319,10 @@ id   objc_getClass( const char *name)
     mulle_objc_classid_t          classid;
 
     if( ! name)
+    {
+       errno = EINVAL;
        return( Nil);
+    }
 
     universe = mulle_objc_get_universe();
     classid  = mulle_objc_classid_from_string( (char *) name);
@@ -340,23 +354,24 @@ Class   objc_getRequiredClass( char *name)
 
 
 //
-// deprecated anyway, our version is not threadsafe
-// and won't be unless requested
+// deprecated anyway
 //
 Class   class_setSuperclass( Class cls, Class superclass)
 {
-   struct _mulle_objc_class   *old;
+   struct _mulle_objc_class      *old;
+   struct _mulle_objc_universe   *universe;
 
-   if( _mulle_objc_class_get_state_bit( (struct _mulle_objc_class *) cls,
-                                       MULLE_OBJC_CLASS_INITIALIZE_DONE))
+   universe = mulle_objc_inlineget_universe();
+
+   _mulle_objc_universe_lock( universe);
    {
-      fprintf( stderr, "can't set superclass anymore, class has run already +initialize\n");
-      return( Nil);
-   }
+      old = _mulle_objc_class_get_superclass((struct _mulle_objc_class *) cls);
+      _mulle_objc_class_set_superclass( (struct _mulle_objc_class *) cls,
+                                       (struct _mulle_objc_class *) superclass);
 
-   old = _mulle_objc_class_get_superclass((struct _mulle_objc_class *) cls);
-   _mulle_objc_class_set_superclass( (struct _mulle_objc_class *) cls,
-                                     (struct _mulle_objc_class *) superclass);
+      mulle_objc_invalidate_class_caches();
+   }
+   _mulle_objc_universe_unlock( universe);
 
    return( (Class) old);
 }
@@ -453,8 +468,9 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
    struct _mulle_objc_ivarlist   *ivarlist;
    struct mulle_allocator        *allocator;
    size_t                        offset;
-   size_t                        type_size;
-   size_t                        type_alignment;
+   unsigned int                  type_size;
+   unsigned int                  type_alignment;
+   mulle_objc_classid_t          classid;
 
    // can't deal with empty name a
    if( ! cls || ! name || ! types || _mulle_objc_class_is_metaclass( (struct _mulle_objc_class *) cls))
@@ -467,10 +483,17 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
    if( ivar)
       return( NO);
 
+   // known to universe already ? Can't do
+   universe  = _mulle_objc_infraclass_get_universe( cls);
+   classid   = _mulle_objc_infraclass_get_classid( cls);
+   if( __mulle_objc_universe_uncachedlookup_infraclass( universe, classid))
+      return( NO);
+
    // we check size and alignment, we need size to be correct
    mulle_objc_signature_supply_size_and_alignment( types, &type_size, &type_alignment);
    if( size < type_size)
       return( NO);
+
    if( ! alignment)
       alignment = type_alignment;
    if( ! size)
@@ -478,11 +501,10 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
 
    // use type_size and type_alignment from now on!
 
-   offset = mulle_objc_class_get_instancesize( cls);
+   offset = _mulle_objc_infraclass_get_instancesize( cls);
    if( offset & (alignment - 1))
       offset = (offset + alignment) & ~(alignment - 1);
 
-   universe  = _mulle_objc_infraclass_get_universe( cls);
    allocator = _mulle_objc_universe_get_allocator( universe);
 
    ivarlist = mulle_allocator_malloc( allocator, mulle_objc_sizeof_ivarlist( 1));
@@ -490,7 +512,7 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
    ivarlist->ivars[ 0].descriptor.ivarid    = mulle_objc_ivarid_from_string( name);
    ivarlist->ivars[ 0].descriptor.name      = mulle_allocator_strdup( allocator, name);
    ivarlist->ivars[ 0].descriptor.signature = mulle_allocator_strdup( allocator, types);
-   ivarlist->ivars[ 0].offset               = mulle_objc_class_get_instancesize( cls);
+   ivarlist->ivars[ 0].offset               = _mulle_objc_infraclass_get_instancesize( cls);
 
    mulle_objc_universe_unfailingadd_gift( universe, ivarlist->ivars[ 0].descriptor.name);
    mulle_objc_universe_unfailingadd_gift( universe, ivarlist->ivars[ 0].descriptor.signature);
@@ -531,26 +553,23 @@ Ivar   class_getInstanceVariable( Class cls, char *name)
 }
 
 
-BOOL   class_addMethod( Class cls, SEL sel, IMP imp, char *types)
+static void   _class_addMethod( Class cls, 
+                                struct _mulle_objc_descriptor *desc, 
+                                SEL sel, 
+                                IMP imp, 
+                                char *types)
 {
    struct _mulle_objc_universe     *universe;
    struct _mulle_objc_methodlist   *list;
-   struct _mulle_objc_descriptor   *desc;
-   size_t  size;
-
-   if( ! cls || ! sel || ! imp)
-      return( NO);
+   size_t                          size;
 
    // selector must have been registered
    universe = _mulle_objc_class_get_universe( (struct _mulle_objc_class *) cls);
-   desc     = _mulle_objc_universe_lookup_descriptor( universe, sel);
-   if( ! desc)
-      return( NO);
 
    size = mulle_objc_sizeof_methodlist( 1);
    list = _mulle_objc_universe_calloc( universe, 1, size);
 
-   list->n_methods = 1;
+   list->n_methods        = 1;
    list->methods[ 0].value = imp;
 
    // if types exist and diverge
@@ -566,11 +585,68 @@ BOOL   class_addMethod( Class cls, SEL sel, IMP imp, char *types)
    list->methods[ 0].descriptor.methodid  = sel;
    list->methods[ 0].descriptor.name      = desc->name;
 
-
    // this invalidates
    mulle_objc_class_add_methodlist( (struct _mulle_objc_class *) cls, list);
-   return( YES);
 }
+
+/* 
+ * the API does not provide a name just a SEL, this is not enough to
+ * produce a proper method (in mulle-objc). Register your selector first
+ * if it isn't defined by any(!) class/category/protocol yet.
+ */
+static IMP  _class_replaceMethod( Class cls, SEL sel, IMP imp, char *types, BOOL replace)
+{
+   struct _mulle_objc_universe     *universe;
+   struct _mulle_objc_descriptor   *desc;   
+   BOOL                            flag;
+   Method                          m;
+   IMP                             old;
+
+   if( ! cls || ! sel || ! imp)
+      return( NO);
+
+   universe = _mulle_objc_class_get_universe( (struct _mulle_objc_class *) cls);
+   desc     = _mulle_objc_universe_lookup_descriptor( universe, sel);
+   if( ! desc)
+   {
+      fprintf( stderr, "The selector %lx is unknown to the runtime.\n"
+                       "Register it with `sel_registerName` first.\n", (unsigned long) sel);
+      return( NO);
+   }
+
+   old = 0;
+   _mulle_objc_universe_lock( universe);
+   {
+      m = _mulle_objc_class_lookup_method( (struct _mulle_objc_class *) cls, (mulle_objc_methodid_t) sel);
+      if( m)
+      {
+         // replace
+         old = method_getImplementation( m);
+         if( replace)
+            method_setImplementation( m, imp);
+      }
+      else
+         _class_addMethod( cls, desc, sel, imp, types);
+   }
+   _mulle_objc_universe_unlock( universe);
+
+   return( old);
+}
+
+IMP   class_replaceMethod( Class cls, SEL sel, IMP imp, char *types)
+{
+   return( _class_replaceMethod( cls, sel, imp, types, YES));
+}
+
+
+BOOL   class_addMethod( Class cls, SEL sel, IMP imp, char *types)
+{
+   IMP  old;
+
+   old = _class_replaceMethod( cls, sel, imp, types, NO);
+   return( ! old);
+}
+
 
 
 static char   *copyPropertyAttributeString( objc_property_attribute_t *attrs,
@@ -641,11 +717,27 @@ static BOOL
    char                              *s;
 
    if( ! cls || ! name || _mulle_objc_class_is_metaclass( (struct _mulle_objc_class *) cls))
+   {
+      errno = EINVAL;
       return( NO);
+   }
 
    prop = class_getProperty( cls, name);
    if( prop && ! replace)
+   {
+      errno = EEXIST;
       return( NO);
+   }
+
+   //
+   // mulle-objc can't add properties to classes that have run initialize
+   // already... Or can it ? The property will not have a corresponding ivar.
+   // Maybe not a problem.
+   // if( _mulle_objc_infraclass_is_initialized( cls))
+   //{
+   //   errno = EBUSY;
+   //   return( NO);
+   //}
 
    universe  = _mulle_objc_infraclass_get_universe( cls);
    allocator = _mulle_objc_universe_get_allocator( universe);
@@ -718,6 +810,10 @@ BOOL   class_addProtocol( Class cls, PROTOCOL protocol)
    if( class_conformsToProtocol( cls, protocol))
       return( NO);
 
+   //
+   // adding a protocol at runtime is harmless, doesn't deal with
+   // protocol classes though (which would not be harmless)...
+   //
    universe  = _mulle_objc_infraclass_get_universe( cls);
    allocator = _mulle_objc_universe_get_allocator( universe);
    protolist = mulle_allocator_malloc( allocator, mulle_objc_sizeof_protocollist( 1));
@@ -742,6 +838,7 @@ struct method_copy_ctxt
    Method   *p;
    Method   *sentinel;
 };
+
 
 static mulle_objc_walkcommand_t
    count_method( struct _mulle_objc_method *method,
@@ -782,7 +879,11 @@ Method   *class_copyMethodList( Class cls, unsigned int *outCount)
       return( NULL);
    }
 
-   _mulle_objc_class_walk_methods( (struct _mulle_objc_class *) cls, MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS, count_method, &count);
+   count = 0;
+   _mulle_objc_class_walk_methods( (struct _mulle_objc_class *) cls, 
+                                   MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS, 
+                                   count_method, 
+                                   &count);
    result = NULL;
    if( count)
    {
@@ -838,6 +939,14 @@ static mulle_objc_walkcommand_t
 }
 
 
+static int   compare_ivar_by_offset( const void *a, const void *b)
+{
+   Ivar  aIvar = *(Ivar *) a;
+   Ivar  bIvar = *(Ivar *) b;
+
+   return( aIvar->offset - bIvar->offset);
+}
+
 Ivar   *class_copyIvarList( Class cls, unsigned int *outCount)
 {
    Ivar                    *result;
@@ -852,6 +961,7 @@ Ivar   *class_copyIvarList( Class cls, unsigned int *outCount)
       return( NULL);
    }
 
+   count = 0;
    _mulle_objc_infraclass_walk_ivars( cls,
                                       MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS,
                                       count_ivar,
@@ -869,6 +979,8 @@ Ivar   *class_copyIvarList( Class cls, unsigned int *outCount)
                                          MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS,
                                          copy_ivar,
                                          &ctxt);
+
+      qsort( result, count, sizeof( Ivar), compare_ivar_by_offset);
    }
 
    if( outCount)
@@ -929,10 +1041,12 @@ objc_property_t   *class_copyPropertyList( Class cls, unsigned int *outCount)
       return( NULL);
    }
 
+   count = 0;
    _mulle_objc_infraclass_walk_properties( cls,
                                            MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS,
                                            count_property,
                                            &count);
+   result = NULL;
    if( count)
    {
       result = (objc_property_t *) mulle_allocator_malloc( &mulle_stdlib_allocator,
@@ -951,8 +1065,6 @@ objc_property_t   *class_copyPropertyList( Class cls, unsigned int *outCount)
       *outCount = count;
    return( result);
 }
-
-
 
 
 /***********************************************************************
@@ -1008,11 +1120,13 @@ PROTOCOL   *class_copyProtocolList( Class cls, unsigned int *outCount)
       return( NULL);
    }
 
-   pair = _mulle_objc_class_get_classpair( (struct _mulle_objc_class *) cls);
+   pair  = _mulle_objc_class_get_classpair( (struct _mulle_objc_class *) cls);
+   count = 0;
    _mulle_objc_classpair_walk_protocolids( pair,
                                            MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS,
                                            count_protocol,
                                            &count);
+   result = NULL;
    if( count)
    {
       result = (PROTOCOL *) mulle_allocator_malloc( &mulle_stdlib_allocator,
@@ -1045,5 +1159,26 @@ objc_property_t class_getProperty(Class cls, char *name)
 
    propertyid = mulle_objc_propertyid_from_string( name);
    return( _mulle_objc_infraclass_search_property( cls, propertyid));
+}
+
+
+IMP  class_getMethodImplementation( Class aClass, SEL sel)
+{
+   IMP                        imp;
+   struct _mulle_objc_class   *cls;
+
+   if( ! aClass || ! sel)
+      return( (IMP) 0);
+
+   cls = (struct _mulle_objc_class *) aClass;
+
+   // this apparently needs to run always
+   // maybe because the initializer might setup more methods
+
+   if( ! _mulle_objc_class_get_state_bit( cls, MULLE_OBJC_CLASS_INITIALIZE_DONE))
+      _mulle_objc_class_setup( cls);  
+   imp = (IMP) _mulle_objc_class_noncachinglookup_implementation_no_forward( cls, 
+                                                                             (mulle_objc_methodid_t) sel);
+   return( imp);
 }
 

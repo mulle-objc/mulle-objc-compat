@@ -9,20 +9,6 @@
 // b) would not be able to pass varargs (no way to figure that out)
 // c) would not be able to return struct values
 //
-id   method_invoke( id receiver, Method m, ...)
-{
-   abort();
-}
-
-//
-// because of the return value casting, this can probably
-// not be done in C
-//
-void   method_invoke_stret( id receiver, Method m, ...)
-{
-   abort();
-}
-
 
 struct type_range
 {
@@ -69,7 +55,7 @@ static struct type_range  _signature_findTypeRange_skip( char *start, unsigned i
 // skip 0: rval
 // skip 1: self
 // skip 2: _cmd
-// skip 3: arg 0 
+// skip 3: arg 0
 static void  _signature_getType_skip( char *s, unsigned int skip, char *dst, size_t dst_len)
 {
    size_t              len;
@@ -105,7 +91,7 @@ void   method_getReturnType(Method m, char *dst, size_t dst_len)
 // in a bizare twist this considers
 // index 0: self
 // index 1: _cmd
-// index 2: arg 0 
+// index 2: arg 0
 void   method_getArgumentType( Method m, unsigned int index, char *dst, size_t dst_len)
 {
    char   *s;
@@ -129,7 +115,7 @@ void   method_getArgumentType( Method m, unsigned int index, char *dst, size_t d
 // skip 0: rval
 // skip 1: self
 // skip 2: _cmd
-// skip 3: arg 0 
+// skip 3: arg 0
 static char   *method_copyType_skip( Method m, unsigned int skip)
 {
    struct type_range   range;
@@ -181,10 +167,17 @@ void  method_exchangeImplementations( Method m1, Method m2)
    if ( ! m1 || !m2)
       return;
 
+   universe = mulle_objc_inlineget_universe();
+
+   // lock that operates on the scope of compat only
+   _mulle_objc_universe_lock( universe);
+
    m1_imp = _mulle_objc_method_get_implementation( m1);
    m2_imp = _mulle_objc_method_get_implementation( m2);
    _mulle_objc_method_set_implementation( m1, m2_imp);
    _mulle_objc_method_set_implementation( m2, m1_imp);
 
    mulle_objc_invalidate_class_caches();
+
+   _mulle_objc_universe_unlock( universe);
 }

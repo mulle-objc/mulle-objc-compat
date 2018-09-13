@@ -8,27 +8,13 @@
  */
 
 
-char   *property_copyAttributeValue( objc_property_t property, char *attributeName)
-{
-  
-}
-
-objc_property_attribute_t *property_copyAttributeList(objc_property_t prop, 
-                                                      unsigned int *outCount)
-{
-    if (!prop) {
-        if (outCount) *outCount = 0;
-        return nil;
-    }
-}
-
 
 //
 // this is brazen theft of https://github.com/RetVal/objc-runtime/blob/1614b34b287a4a926ae6aa0c6e0e2e494c206599/runtime/objc-class.mm#L1085
 //
 /*
   Property attribute string format:
-  - Comma-separated name-value pairs. 
+  - Comma-separated name-value pairs.
   - Name and value may not contain ,
   - Name may not contain "
   - Value may be empty
@@ -43,14 +29,14 @@ objc_property_attribute_t *property_copyAttributeList(objc_property_t prop,
     quoted-name:      '"' [^",]{2,} '"'
     optional-value:   [^,]*
 */
-static unsigned int   iteratePropertyAttributes( char *attrs, 
-                                                 BOOL (*fn)(unsigned int index, 
-                                                            void *ctx1, void *ctx2, 
-                                                            char *name, size_t nlen, 
-                                                            char *value, size_t vlen), 
+static unsigned int   iteratePropertyAttributes( char *attrs,
+                                                 BOOL (*fn)(unsigned int index,
+                                                            void *ctx1, void *ctx2,
+                                                            char *name, size_t nlen,
+                                                            char *value, size_t vlen),
                                                  void *ctx1, void *ctx2)
 {
-   if( ! attrs) 
+   if( ! attrs)
      return 0;
 
 #ifndef NDEBUG
@@ -58,7 +44,7 @@ static unsigned int   iteratePropertyAttributes( char *attrs,
 #endif
    unsigned int attrcount = 0;
 
-   while (*attrs) 
+   while (*attrs)
    {
       // Find the next comma-separated attribute
       char *start = attrs;
@@ -70,9 +56,9 @@ static unsigned int   iteratePropertyAttributes( char *attrs,
       assert(attrs <= attrsend);
       assert(start <= attrsend);
       assert(end <= attrsend);
-      
+
       // Skip empty attribute
-      if (start == end) 
+      if (start == end)
          continue;
 
       // Process one non-empty comma-free attribute [start,end)
@@ -82,21 +68,21 @@ static unsigned int   iteratePropertyAttributes( char *attrs,
       assert( start < end);
       assert( *start);
 
-      if( *start != '\"') 
+      if( *start != '\"')
       {
          // single-char short name
          nameStart = start;
          nameEnd   = start+1;
          start++;
       }
-      else 
+      else
       {
          // double-quoted long name
          nameStart = start+1;
          nameEnd   = nameStart + strcspn(nameStart, "\",");
          start++;                       // leading quote
          start    += nameEnd - nameStart;  // name
-         if (*start == '\"')  
+         if (*start == '\"')
             start++;   // trailing quote, if any
       }
 
@@ -109,21 +95,21 @@ static unsigned int   iteratePropertyAttributes( char *attrs,
       valueStart = start;
       valueEnd  = end;
 
-      BOOL more = (*fn)(attrcount, ctx1, ctx2, 
-                        nameStart, nameEnd-nameStart, 
+      BOOL more = (*fn)(attrcount, ctx1, ctx2,
+                        nameStart, nameEnd-nameStart,
                         valueStart, valueEnd-valueStart);
       attrcount++;
 
-      if( ! more) 
+      if( ! more)
          break;
    }
 
    return attrcount;
 }
 
-static BOOL 
-findOneAttribute(unsigned int index, void *ctxa, void *ctxs, 
-                 char *name, size_t nlen, char *value, size_t vlen)
+static BOOL
+   findOneAttribute(unsigned int index, void *ctxa, void *ctxs,
+                    char *name, size_t nlen, char *value, size_t vlen)
 {
     char *query = (char *)ctxa;
     char **resultp = (char **)ctxs;
@@ -140,10 +126,10 @@ findOneAttribute(unsigned int index, void *ctxa, void *ctxs,
 }
 
 
-static BOOL   copyOneAttribute( unsigned int index, 
-                                void *ctxa, 
-                                void *ctxs, 
-                                char *name, size_t nlen, 
+static BOOL   copyOneAttribute( unsigned int index,
+                                void *ctxa,
+                                void *ctxs,
+                                char *name, size_t nlen,
                                 char *value, size_t vlen)
 {
    objc_property_attribute_t **ap = (objc_property_attribute_t**)ctxa;
@@ -171,18 +157,35 @@ static BOOL   copyOneAttribute( unsigned int index,
 }
 
 
+static char   *copyPropertyAttributeValue( char *attrs, const char *name)
+{
+   char *result;
+
+   result = nil;
+   iteratePropertyAttributes(attrs, findOneAttribute, (void*)name, &result);
+   return( result);
+}
+
+
+char   *property_copyAttributeValue( objc_property_t property, char *name)
+{
+   char  *attr;
+
+   if( ! name)
+      return( NULL);
+
+   attr = property_getAttributes( property);
+   if( ! attr)
+      return( NULL);
+   return( copyPropertyAttributeValue( attr, name));
+}
+
+
 //
 // this is a brazen theft of https://github.com/RetVal/objc-runtime/blob/1614b34b287a4a926ae6aa0c6e0e2e494c206599/runtime/objc-class.mm
 //
 objc_property_attribute_t *copyPropertyAttributeList( char *attrs, unsigned int *outCount)
 {
-   if( ! attrs) 
-   {
-      if( outCount) 
-         *outCount = 0;
-      return nil;
-   }
-
    // Result size:
    //   number of commas plus 1 for the attributes (upper bound)
    //   plus another attribute for the attribute array terminator
@@ -191,17 +194,17 @@ objc_property_attribute_t *copyPropertyAttributeList( char *attrs, unsigned int 
    unsigned int attrcount = 1;
    char *s;
 
-   for(s = attrs; s && *s; s++) 
+   for(s = attrs; s && *s; s++)
    {
-      if (*s == ',') 
+      if (*s == ',')
       attrcount++;
    }
 
-   size_t size = attrcount * sizeof(objc_property_attribute_t) + 
-                 sizeof( objc_property_attribute_t) + 
-                 strlen( attrs) + 
+   size_t size = attrcount * sizeof(objc_property_attribute_t) +
+                 sizeof( objc_property_attribute_t) +
+                 strlen( attrs) +
                  attrcount * 2;
-   objc_property_attribute_t *result = (objc_property_attribute_t *) 
+   objc_property_attribute_t *result = (objc_property_attribute_t *)
       mulle_calloc( size, 1);
 
    objc_property_attribute_t *ra = result;
@@ -212,23 +215,89 @@ objc_property_attribute_t *copyPropertyAttributeList( char *attrs, unsigned int 
    assert((uint8_t *)(ra+1) <= (uint8_t *) result + size);
    assert((uint8_t *)rs <= (uint8_t *) result + size);
 
-   if (attrcount == 0) 
+   if (attrcount == 0)
    {
       mulle_free( result);
       result = nil;
    }
 
-   if (outCount) 
+   if (outCount)
       *outCount = attrcount;
    return result;
 }
 
 
-char *copyPropertyAttributeValue( char *attrs, const char *name)
+objc_property_attribute_t *property_copyAttributeList( objc_property_t property,
+                                                       unsigned int *outCount)
 {
-   char *result = nil;
+   char  *attr;
 
-   iteratePropertyAttributes(attrs, findOneAttribute, (void*)name, &result);
-
-   return result;
+   attr = property_getAttributes( property);
+   if( ! attr)
+   {
+      if( outCount)
+         *outCount = 0;
+      return( NULL);
+   }
+   return( copyPropertyAttributeList( attr, outCount));
 }
+
+
+
+/*
+ * Property accessors...
+ */ 
+id   objc_getProperty( id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) 
+{
+   return(  mulle_objc_object_get_property_value( self, _cmd, offset, atomic));
+}
+
+
+void   objc_setProperty( id self, 
+                         SEL _cmd, 
+                         ptrdiff_t offset, 
+                         id newValue, 
+                         BOOL atomic, 
+                         signed char shouldCopy) 
+{
+   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, atomic, shouldCopy);
+}
+
+void   objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
+{
+   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, NO, 0);
+}
+
+void   objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset)
+{
+   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, NO, 1);
+}
+
+
+void   objc_setProperty_atomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
+{
+   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, YES, 0);
+}
+
+void   objc_setProperty_atomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset)
+{
+   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, YES, 1);
+}
+
+
+// This entry point was designed wrong.  When used as a getter, src needs to be locked so that
+// if simultaneously used for a setter then there would be contention on src.
+// So we need two locks - one of which will be contended.
+void objc_copyStruct( void *dest, 
+                      const void *src, 
+                      ptrdiff_t size, 
+                      BOOL atomic, 
+                      BOOL hasStrong) 
+{
+    if (atomic) {
+       abort();
+    }
+
+    memmove(dest, src, size);
+}
+

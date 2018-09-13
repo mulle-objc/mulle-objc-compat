@@ -7,6 +7,10 @@
 @interface Foo
 @end
 @implementation Foo
++ (Class) class
+{
+   return( self);
+}
 @end
 
 int main()

@@ -9,20 +9,18 @@
 /*
  * https://github.com/RetVal/objc-runtime/blob/942d274d24f06ace04022100b01f17aee0766fdc/runtime/objc-runtime-new.mm#L6219
  */
-id   object_copy( id obj, size_t size)
+id   object_copy( id obj, size_t extra)
 {
-   struct mulle_allocator      *allocator;
    struct _mulle_objc_class    *cls;
    void                        *dup;
-   size_t                      min;
+   size_t                      size;
 
    if( ! obj)
       return( obj);
 
-   cls       = _mulle_objc_object_get_isa( obj);
-   min       = _mulle_objc_class_get_instancesize( cls) - sizeof( struct _mulle_objc_objectheader);
-   allocator = _mulle_objc_object_get_allocator( obj);
-   dup       = _mulle_objc_infraclass_alloc_instance_extra( (struct _mulle_objc_infraclass *) cls, size - min, allocator);
+   cls  = _mulle_objc_object_get_isa( obj);
+   size = _mulle_objc_class_get_instancesize( cls) - sizeof( struct _mulle_objc_objectheader);
+   dup  = _mulle_objc_infraclass_alloc_instance_extra( (struct _mulle_objc_infraclass *) cls, extra);
    if( ! dup)
       return( dup);
 
@@ -30,7 +28,7 @@ id   object_copy( id obj, size_t size)
    // this function rarely makes sense, as the ivars aren't retained properly
    // it would be possible to do so, but Apple doesn't do it either
    //
-   memcpy( dup, obj, size);
+   memcpy( dup, obj, extra + size);
 
    return( dup);
 }

@@ -13,7 +13,15 @@
       "bitset": "c",
       "initializer_list": "c",
       "utility": "c",
-      "string_view": "c"
+      "string_view": "c",
+      "ratio": "c",
+      "system_error": "c",
+      "type_traits": "c",
+      "istream": "c",
+      "optional": "c",
+      "ostream": "c",
+      "chrono": "c",
+      "limits": "c"
    }
 }
 }

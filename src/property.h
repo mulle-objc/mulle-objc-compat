@@ -38,4 +38,18 @@ objc_property_attribute_t *property_copyAttributeList( objc_property_t property,
                                                        unsigned int *outCount);
 
 
+
+void   objc_setProperty( id self, 
+                         SEL _cmd, 
+                         ptrdiff_t offset, 
+                         id newValue, 
+                         BOOL atomic, 
+                         signed char shouldCopy);
+
+void   objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset);
+void   objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset);
+
+void   objc_setProperty_atomic(id self, SEL _cmd, id newValue, ptrdiff_t offset);
+void   objc_setProperty_atomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset);
+
 #endif
