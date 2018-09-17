@@ -1,2 +1,2 @@
-mulle-objc-runtime;git;no-all-load,no-import;6f316fbb-e3cc-4e14-aad3-cdea4db5d435;${MULLE_OBJC_RUNTIME_URL:-https://github.com/mulle-objc/mulle-objc-runtime.git};${MULLE_OBJC_RUNTIME_BRANCH};;;
-src/ns-objc-type.h;file;no-all-load,no-build,no-header,no-import,no-link,no-share;cd37858d-5191-4b4f-83a9-da6490f4d7dc;https://raw.githubusercontent.com/mulle-objc/MulleObjC/release/src/ns_objc_type.h;;;;
+MulleObjC;tar;no-all-load,no-header,no-import,no-link;FEAA711E-D81B-4689-86C7-BD40782DB954;${MULLE_OBJC_URL:-https://github.com/mulle-objc/MulleObjC/archive/${MULLE_OBJC_BRANCH:-latest}.tar.gz};;;;
+mulle-objc-runtime;none;no-all-load,no-build,no-delete,no-dependency,no-fs,no-import,no-update;7DCB323B-96E7-44F9-AC8F-193C74F61CEF;mulle-objc-runtime;;;;include=mulle-objc-runtime/mulle-objc-runtime.h

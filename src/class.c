@@ -553,10 +553,10 @@ Ivar   class_getInstanceVariable( Class cls, char *name)
 }
 
 
-static void   _class_addMethod( Class cls, 
-                                struct _mulle_objc_descriptor *desc, 
-                                SEL sel, 
-                                IMP imp, 
+static void   _class_addMethod( Class cls,
+                                struct _mulle_objc_descriptor *desc,
+                                SEL sel,
+                                IMP imp,
                                 char *types)
 {
    struct _mulle_objc_universe     *universe;
@@ -589,7 +589,7 @@ static void   _class_addMethod( Class cls,
    mulle_objc_class_add_methodlist( (struct _mulle_objc_class *) cls, list);
 }
 
-/* 
+/*
  * the API does not provide a name just a SEL, this is not enough to
  * produce a proper method (in mulle-objc). Register your selector first
  * if it isn't defined by any(!) class/category/protocol yet.
@@ -597,13 +597,13 @@ static void   _class_addMethod( Class cls,
 static IMP  _class_replaceMethod( Class cls, SEL sel, IMP imp, char *types, BOOL replace)
 {
    struct _mulle_objc_universe     *universe;
-   struct _mulle_objc_descriptor   *desc;   
+   struct _mulle_objc_descriptor   *desc;
    BOOL                            flag;
    Method                          m;
    IMP                             old;
 
    if( ! cls || ! sel || ! imp)
-      return( NO);
+      return( 0);
 
    universe = _mulle_objc_class_get_universe( (struct _mulle_objc_class *) cls);
    desc     = _mulle_objc_universe_lookup_descriptor( universe, sel);
@@ -611,7 +611,7 @@ static IMP  _class_replaceMethod( Class cls, SEL sel, IMP imp, char *types, BOOL
    {
       fprintf( stderr, "The selector %lx is unknown to the runtime.\n"
                        "Register it with `sel_registerName` first.\n", (unsigned long) sel);
-      return( NO);
+      return( 0);
    }
 
    old = 0;
@@ -880,9 +880,9 @@ Method   *class_copyMethodList( Class cls, unsigned int *outCount)
    }
 
    count = 0;
-   _mulle_objc_class_walk_methods( (struct _mulle_objc_class *) cls, 
-                                   MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS, 
-                                   count_method, 
+   _mulle_objc_class_walk_methods( (struct _mulle_objc_class *) cls,
+                                   MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS,
+                                   count_method,
                                    &count);
    result = NULL;
    if( count)
@@ -1176,8 +1176,8 @@ IMP  class_getMethodImplementation( Class aClass, SEL sel)
    // maybe because the initializer might setup more methods
 
    if( ! _mulle_objc_class_get_state_bit( cls, MULLE_OBJC_CLASS_INITIALIZE_DONE))
-      _mulle_objc_class_setup( cls);  
-   imp = (IMP) _mulle_objc_class_noncachinglookup_implementation_no_forward( cls, 
+      _mulle_objc_class_setup( cls);
+   imp = (IMP) _mulle_objc_class_noncachinglookup_implementation_no_forward( cls,
                                                                              (mulle_objc_methodid_t) sel);
    return( imp);
 }

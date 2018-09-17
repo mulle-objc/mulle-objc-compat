@@ -5,16 +5,16 @@
 
 
 //
-// provide some runtime glue, to map Apple runtime calls to 
+// provide some runtime glue, to map Apple runtime calls to
 // MulleObjC runtime calls
 // Obviously this can't be 100% perfect....
 //
 typedef struct _mulle_objc_property  *objc_property_t;
 
-typedef struct 
+typedef struct
 {
-   char   *name;          
-   char   *value;        
+   char   *name;
+   char   *value;
 } objc_property_attribute_t;
 
 /*
@@ -34,16 +34,16 @@ static inline char   *property_getAttributes( objc_property_t property)
 
 char   *property_copyAttributeValue( objc_property_t property, char *attributeName);
 
-objc_property_attribute_t *property_copyAttributeList( objc_property_t property, 
+objc_property_attribute_t *property_copyAttributeList( objc_property_t property,
                                                        unsigned int *outCount);
 
 
 
-void   objc_setProperty( id self, 
-                         SEL _cmd, 
-                         ptrdiff_t offset, 
-                         id newValue, 
-                         BOOL atomic, 
+void   objc_setProperty( id self,
+                         SEL _cmd,
+                         ptrdiff_t offset,
+                         id newValue,
+                         BOOL atomic,
                          signed char shouldCopy);
 
 void   objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset);

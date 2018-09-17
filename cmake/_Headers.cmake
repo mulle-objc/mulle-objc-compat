@@ -38,7 +38,6 @@ src/include.h
 src/ivar.h
 src/method.h
 src/mulle-objc-compat.h
-src/ns-objc-type.h
 src/objc.h
 src/object.h
 src/property.h

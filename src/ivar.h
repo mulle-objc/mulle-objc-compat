@@ -1,8 +1,7 @@
 #ifndef objc_mullecompat_ivar__h__
 #define objc_mullecompat_ivar__h__
 
-#include <mulle-objc-runtime/mulle-objc-runtime.h>
-#include "ns-objc-type.h"
+#include "include.h"
 
 // this is done already in ns-ojc-type.h
 // typedef struct _mulle_objc_ivar  *Ivar;

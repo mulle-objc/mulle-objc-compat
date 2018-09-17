@@ -27,8 +27,9 @@
 # define __MULLE_OBJC_NO_TRT__
 #endif
 
-#include <mulle-objc-runtime/mulle-objc-runtime.h>
-#include "ns-objc-type.h"
+#include "_mulle-objc-compat-include.h"
+
+#include <MulleObjC/ns-c.h>
 
 /* You can add some more include statements here */
 
