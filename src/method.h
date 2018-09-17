@@ -2,17 +2,16 @@
 #define objc_mullecompat_method__h__
 
 #include "include.h"
-#include <stdint.h>
 
-#include "ns-objc-type.h"
+#include <stdint.h>
 
 
 //
-// provide some runtime glue, to map Apple runtime calls to 
+// provide some runtime glue, to map Apple runtime calls to
 // MulleObjC runtime calls
 // Obviously this can't be 100% perfect....
 //
-struct objc_method_description 
+struct objc_method_description
 {
    SEL    name;
    char   *types;
@@ -74,7 +73,7 @@ static inline unsigned int method_getNumberOfArguments( Method m)
 
 //
 // the objc_method_description is at an offset in the mulle descriptor!
-// 
+//
 static inline struct objc_method_description * method_getDescription( Method m)
 {
    return( m ? (struct objc_method_description *) &m->descriptor : NULL);
@@ -88,7 +87,7 @@ static inline IMP   method_setImplementation( Method m, IMP imp)
 
    if( ! m || ! imp)
       return( NULL);
-   return( (IMP) _mulle_atomic_functionpointer_set( &m->implementation, 
+   return( (IMP) _mulle_atomic_functionpointer_set( &m->implementation,
                                                     (mulle_functionpointer_t) imp));
 }
 
