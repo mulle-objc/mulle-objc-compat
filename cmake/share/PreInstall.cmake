@@ -6,8 +6,10 @@ if( NOT __PRE_INSTALL__CMAKE__)
    endif()
 
    # turn off unneeded verbosity when installing
-   set( CMAKE_INSTALL_MESSAGE LAZY)
-
+   if( NOT CMAKE_INSTALL_MESSAGE)
+   	set( CMAKE_INSTALL_MESSAGE NEVER)
+   endif()
+   
    include( FinalOutputC)
 
    # a place to add stuff for ObjC or C++

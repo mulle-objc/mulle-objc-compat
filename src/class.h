@@ -14,7 +14,7 @@ typedef mulle_objc_categoryid_t  Category;
 /*
  * pointer indirection fits tests better
  */
-#define _objc_msgForward  *mulle_objc_method_get_implementation( mulle_objc_inlineget_universe()->classdefaults.forwardmethod)
+#define _objc_msgForward  *mulle_objc_method_get_implementation( mulle_objc_global_inlineget_universe( MULLE_OBJC_DEFAULTUNIVERSEID)->classdefaults.forwardmethod)
 #define _objc_msgForward_stret   _objc_msgForward
 
 /*
@@ -78,7 +78,7 @@ static inline BOOL   class_respondsToSelector( Class cls, SEL sel)
 {
    IMP   imp;
 
-   imp = (IMP) _mulle_objc_class_lookup_implementation_no_forward( (struct _mulle_objc_class *) cls,
+   imp = (IMP) _mulle_objc_class_lookup_implementation_noforward( (struct _mulle_objc_class *) cls,
                                                                    (mulle_objc_methodid_t) sel);
    return( imp ? YES : NO);
 }

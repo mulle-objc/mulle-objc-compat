@@ -1,5 +1,6 @@
 #include "object.h"
 
+#include "include-private.h"
 
 
 /*

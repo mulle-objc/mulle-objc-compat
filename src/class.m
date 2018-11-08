@@ -1,5 +1,7 @@
 #include "class.h"
 
+#include "include-private.h"
+
 #include <assert.h>
 #include <errno.h>
 #include <stdlib.h>
@@ -18,7 +20,7 @@ Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
    }
 
    // name must be strduped here for API compatibility
-   universe  = mulle_objc_get_universe();
+   universe  = MulleObjCGetUniverse();
    name      = mulle_objc_universe_strdup( universe, name);
    classid   = mulle_objc_classid_from_string( name);
    classpair = mulle_objc_universe_new_classpair( universe, classid, name, 0, superclass);
@@ -28,7 +30,7 @@ Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
                             name);
       return( Nil);
    }
-   mulle_objc_universe_unfailingadd_gift( universe, name);
+   mulle_objc_universe_add_gift_nofail( universe, name);
 
    return( mulle_objc_classpair_get_infraclass( classpair));
 }
@@ -43,18 +45,18 @@ void   objc_registerClassPair( Class infra)
    struct _mulle_objc_universe    *universe;
    struct _mulle_objc_metaclass   *meta;
 
-   universe  = mulle_objc_get_universe();
-   meta      = _mulle_objc_infraclass_get_metaclass( infra);
+   universe = MulleObjCGetUniverse();
+   meta     = _mulle_objc_infraclass_get_metaclass( infra);
 
    // fix up missing stuff, since mulle-objc-runtime has special needs
    // empty lists will be added where required
 
-   mulle_objc_infraclass_unfailingadd_methodlist( infra, NULL);
-   mulle_objc_metaclass_unfailingadd_methodlist( meta, NULL);
-   mulle_objc_infraclass_unfailingadd_ivarlist( infra, NULL);
-   mulle_objc_infraclass_unfailingadd_propertylist( infra, NULL);
+   mulle_objc_infraclass_add_methodlist_nofail( infra, NULL);
+   mulle_objc_metaclass_add_methodlist_nofail( meta, NULL);
+   mulle_objc_infraclass_add_ivarlist_nofail( infra, NULL);
+   mulle_objc_infraclass_add_propertylist_nofail( infra, NULL);
 
-   mulle_objc_universe_unfailingadd_infraclass( universe, infra);
+   mulle_objc_universe_add_infraclass_nofail( universe, infra);
 }
 
 
@@ -70,7 +72,7 @@ void   objc_disposeClassPair( Class cls)
    if( ! cls)
       return;
 
-   universe  = _mulle_objc_infraclass_get_universe( cls);
+   universe  = MulleObjCGetUniverse();
    allocator = _mulle_objc_universe_get_allocator( universe);
    classpair = _mulle_objc_infraclass_get_classpair( cls);
 
@@ -93,8 +95,8 @@ static struct _mulle_objc_methodlist  *
 }
 
 
-void   class_copy_methodlists( struct _mulle_objc_class *dst,
-                               struct _mulle_objc_class *cls)
+static void   class_copy_methodlists( struct _mulle_objc_class *dst,
+                                      struct _mulle_objc_class *cls)
 {
    struct mulle_concurrent_pointerarray             *array;
    struct mulle_concurrent_pointerarrayenumerator   rover;
@@ -307,9 +309,9 @@ Class   objc_lookUpClass( char *name)
        errno = EINVAL;
        return( Nil);
     }
-    universe = mulle_objc_get_universe();
+    universe = MulleObjCGetUniverse();
     classid  = mulle_objc_classid_from_string( name);
-    return( _mulle_objc_universe_fastlookup_infraclass( universe, classid));
+    return( _mulle_objc_universe_lookup_infraclass( universe, classid));
 }
 
 
@@ -324,7 +326,7 @@ id   objc_getClass( const char *name)
        return( Nil);
     }
 
-    universe = mulle_objc_get_universe();
+    universe = MulleObjCGetUniverse();
     classid  = mulle_objc_classid_from_string( (char *) name);
     return( _mulle_objc_universe_lookup_infraclass( universe, classid));   // do we have a delayed class handler ?
 }
@@ -349,7 +351,7 @@ Class   objc_getRequiredClass( char *name)
        return( Nil);
 
     classid  = mulle_objc_classid_from_string( name);
-    return( mulle_objc_unfailingfastlookup_infraclass( classid));
+    return( mulle_objc_global_lookup_infraclass_nofail( MULLE_OBJC_DEFAULTUNIVERSEID, classid));
 }
 
 
@@ -361,15 +363,14 @@ Class   class_setSuperclass( Class cls, Class superclass)
    struct _mulle_objc_class      *old;
    struct _mulle_objc_universe   *universe;
 
-   universe = mulle_objc_inlineget_universe();
-
+   universe = MulleObjCGetUniverse();
    _mulle_objc_universe_lock( universe);
    {
       old = _mulle_objc_class_get_superclass((struct _mulle_objc_class *) cls);
       _mulle_objc_class_set_superclass( (struct _mulle_objc_class *) cls,
                                        (struct _mulle_objc_class *) superclass);
 
-      mulle_objc_invalidate_class_caches();
+      _mulle_objc_universe_invalidate_classcaches( universe, NULL);
    }
    _mulle_objc_universe_unlock( universe);
 
@@ -432,7 +433,7 @@ int   objc_getClassList( Class  *buffer, int bufferCount)
    info.total = 0;
 
    n_classes = 0;
-   universe  = mulle_objc_get_universe();
+   universe  = MulleObjCGetUniverse();
    mulle_objc_universe_walk_infraclasses( universe, copy_classes, &n_classes);
 
    if( ! buffer)
@@ -486,7 +487,7 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
    // known to universe already ? Can't do
    universe  = _mulle_objc_infraclass_get_universe( cls);
    classid   = _mulle_objc_infraclass_get_classid( cls);
-   if( __mulle_objc_universe_uncachedlookup_infraclass( universe, classid))
+   if( _mulle_objc_universe_lookup_infraclass( universe, classid))
       return( NO);
 
    // we check size and alignment, we need size to be correct
@@ -514,8 +515,8 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
    ivarlist->ivars[ 0].descriptor.signature = mulle_allocator_strdup( allocator, types);
    ivarlist->ivars[ 0].offset               = _mulle_objc_infraclass_get_instancesize( cls);
 
-   mulle_objc_universe_unfailingadd_gift( universe, ivarlist->ivars[ 0].descriptor.name);
-   mulle_objc_universe_unfailingadd_gift( universe, ivarlist->ivars[ 0].descriptor.signature);
+   mulle_objc_universe_add_gift_nofail( universe, ivarlist->ivars[ 0].descriptor.name);
+   mulle_objc_universe_add_gift_nofail( universe, ivarlist->ivars[ 0].descriptor.signature);
 
    // don't gift the ivarlist
 
@@ -743,7 +744,7 @@ static BOOL
    allocator = _mulle_objc_universe_get_allocator( universe);
    s         = copyPropertyAttributeString( attrs, count, allocator);
    if( s)
-      mulle_objc_universe_unfailingadd_gift( universe, s);
+      mulle_objc_universe_add_gift_nofail( universe, s);
    else
       s = "";
 
@@ -764,7 +765,7 @@ static BOOL
    proplist->properties[ 0].name        = mulle_allocator_strdup( allocator, name);
    proplist->properties[ 0].signature   = s;
 
-   mulle_objc_universe_unfailingadd_gift( universe, proplist->properties[ 0].name);
+   mulle_objc_universe_add_gift_nofail( universe, proplist->properties[ 0].name);
 
    // don't gift the proplist
    mulle_objc_infraclass_add_propertylist( cls, proplist);
@@ -823,7 +824,7 @@ BOOL   class_addProtocol( Class cls, PROTOCOL protocol)
    protolist->protocols[ 0].name        = "\"?\"n";  // we don't know it
 
    pair = _mulle_objc_infraclass_get_classpair( cls);
-   mulle_objc_classpair_unfailingadd_protocollist( pair, protolist);
+   mulle_objc_classpair_add_protocollist_nofail( pair, protolist);
    return( YES);
 }
 
@@ -1177,7 +1178,7 @@ IMP  class_getMethodImplementation( Class aClass, SEL sel)
 
    if( ! _mulle_objc_class_get_state_bit( cls, MULLE_OBJC_CLASS_INITIALIZE_DONE))
       _mulle_objc_class_setup( cls);
-   imp = (IMP) _mulle_objc_class_noncachinglookup_implementation_no_forward( cls,
+   imp = (IMP) _mulle_objc_class_lookup_implementation_nocache_noforward( cls,
                                                                              (mulle_objc_methodid_t) sel);
    return( imp);
 }

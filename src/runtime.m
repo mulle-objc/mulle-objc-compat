@@ -1,6 +1,9 @@
 #include "runtime.h"
 
-static mulle_objc_walkcommand_t   
+#include "include-private.h"
+
+
+static mulle_objc_walkcommand_t
    set_forward( struct _mulle_objc_universe *universe,
                 void *cls,
                 enum mulle_objc_walkpointertype_t type,
@@ -12,7 +15,7 @@ static mulle_objc_walkcommand_t
 
    _mulle_objc_class_set_forwardmethod( cls, forward);
    return( mulle_objc_walk_ok);
-}                              
+}
 
 
 void   objc_setForwardHandler( void *fwd, void *fwd_stret)
@@ -28,7 +31,7 @@ void   objc_setForwardHandler( void *fwd, void *fwd_stret)
    forward.descriptor.signature = "v@:@@";
    forward.implementation       = fwd;
 
-   universe = mulle_objc_get_or_create_universe();
+   universe = MulleObjCGetUniverse();
    _mulle_objc_universe_lock( universe);
    {
       universe->classdefaults.forwardmethod = &forward;
@@ -43,7 +46,7 @@ void   _objc_registerTaggedPointerClass( unsigned int index, Class cls)
 {
    struct _mulle_objc_universe   *universe;
 
-   universe = mulle_objc_get_universe();
+   universe = MulleObjCGetUniverse();
    if ( _mulle_objc_universe_set_taggedpointerclass_at_index( universe, cls, index))
-      mulle_objc_raise_inconsistency_exception( "Tagged pointer index %u is out of range", index);
+      mulle_objc_universe_fail_inconsistency( universe, "Tagged pointer index %u is out of range", index);
 }

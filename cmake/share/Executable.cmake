@@ -10,6 +10,7 @@ endif()
 include( ExecutableCAux OPTIONAL)
 
 include( AllLoadC)
+include( StartupC)
 
 CreateForceAllLoadList( ALL_LOAD_DEPENDENCY_LIBRARIES FORCE_ALL_LOAD_DEPENDENCY_LIBRARIES)
 

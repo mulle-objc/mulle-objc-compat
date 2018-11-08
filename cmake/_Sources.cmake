@@ -5,16 +5,16 @@ if( MULLE_TRACE_INCLUDE)
 endif()
 
 set( SOURCES
-src/class.c
-src/method.c
-src/mulle-objc-compat.c
-src/object.c
-src/property.c
-src/protocol.c
-src/runtime.c
-src/selector.c
+src/class.m
+src/method.m
+src/mulle-objc-compat.m
+src/object.m
+src/property.m
+src/protocol.m
+src/runtime.m
+src/selector.m
 )
 
 set( STANDALONE_SOURCES
-src/mulle-objc-compat-standalone.c
+src/mulle-objc-compat-standalone.m
 )

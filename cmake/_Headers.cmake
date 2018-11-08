@@ -30,6 +30,7 @@ src/objc/runtime.h
 
 set( PRIVATE_HEADERS
 src/include-private.h
+src/_mulle-objc-compat-import-private.h
 )
 
 set( PUBLIC_HEADERS
@@ -38,6 +39,7 @@ src/include.h
 src/ivar.h
 src/method.h
 src/mulle-objc-compat.h
+src/_mulle-objc-compat-import.h
 src/objc.h
 src/object.h
 src/property.h
