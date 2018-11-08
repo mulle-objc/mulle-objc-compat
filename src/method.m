@@ -1,5 +1,7 @@
 #include "method.h"
 
+#include "include-private.h"
+
 #include <stdarg.h>
 #include <ctype.h>
 
@@ -167,7 +169,7 @@ void  method_exchangeImplementations( Method m1, Method m2)
    if ( ! m1 || !m2)
       return;
 
-   universe = mulle_objc_inlineget_universe();
+   universe = MulleObjCGetUniverse();
 
    // lock that operates on the scope of compat only
    _mulle_objc_universe_lock( universe);
@@ -177,7 +179,7 @@ void  method_exchangeImplementations( Method m1, Method m2)
    _mulle_objc_method_set_implementation( m1, m2_imp);
    _mulle_objc_method_set_implementation( m2, m1_imp);
 
-   mulle_objc_invalidate_class_caches();
+   _mulle_objc_universe_invalidate_classcaches( universe, NULL);
 
    _mulle_objc_universe_unlock( universe);
 }

@@ -23,13 +23,13 @@
 
 #ifndef __MULLE_OBJC__
 # define __MULLE_OBJC_TPS__
-# define __MULLE_OBJC_FMC__
-# define __MULLE_OBJC_NO_TRT__
+# define __MULLE_OBJC_FCS__
+# define __MULLE_OBJC_UNIVERSNAME__   falballa
 #endif
 
 #include "_mulle-objc-compat-include.h"
 
-#include <MulleObjC/ns-c.h>
+#include <MulleObjC/mulle-objc.h>
 
 /* You can add some more include statements here */
 

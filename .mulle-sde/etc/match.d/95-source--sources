@@ -1,1 +1,4 @@
-../../share/match.d/95-source--sources
+# this is the fallback if patterns file with smaller numbers fail
+
+*.[cm]
+*.aam

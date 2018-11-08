@@ -1,5 +1,7 @@
 #include "property.h"
 
+#include "include-private.h"
+
 
 #include <assert.h>
 
@@ -246,19 +248,19 @@ objc_property_attribute_t *property_copyAttributeList( objc_property_t property,
 
 /*
  * Property accessors...
- */ 
-id   objc_getProperty( id self, SEL _cmd, ptrdiff_t offset, BOOL atomic) 
+ */
+id   objc_getProperty( id self, SEL _cmd, ptrdiff_t offset, BOOL atomic)
 {
    return(  mulle_objc_object_get_property_value( self, _cmd, offset, atomic));
 }
 
 
-void   objc_setProperty( id self, 
-                         SEL _cmd, 
-                         ptrdiff_t offset, 
-                         id newValue, 
-                         BOOL atomic, 
-                         signed char shouldCopy) 
+void   objc_setProperty( id self,
+                         SEL _cmd,
+                         ptrdiff_t offset,
+                         id newValue,
+                         BOOL atomic,
+                         signed char shouldCopy)
 {
    mulle_objc_object_set_property_value( self, _cmd, offset, newValue, atomic, shouldCopy);
 }
@@ -288,11 +290,11 @@ void   objc_setProperty_atomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t of
 // This entry point was designed wrong.  When used as a getter, src needs to be locked so that
 // if simultaneously used for a setter then there would be contention on src.
 // So we need two locks - one of which will be contended.
-void objc_copyStruct( void *dest, 
-                      const void *src, 
-                      ptrdiff_t size, 
-                      BOOL atomic, 
-                      BOOL hasStrong) 
+void objc_copyStruct( void *dest,
+                      const void *src,
+                      ptrdiff_t size,
+                      BOOL atomic,
+                      BOOL hasStrong)
 {
     if (atomic) {
        abort();

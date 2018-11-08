@@ -1,5 +1,7 @@
 #include "protocol.h"
 
+#include "include-private.h"
+
 /*
  * PROTOCOL
  * There exists a runtime mulle protocol struct, but it's not the same as PROTOCOL
@@ -22,7 +24,7 @@ Protocol *objc_allocateProtocol( char *name)
    if( ! name)
       return( NULL);
 
-   universe   = mulle_objc_get_universe();
+   universe   = MulleObjCGetUniverse();
    protocolid = mulle_objc_protocolid_from_string( name);
    if( _mulle_objc_universe_lookup_protocol( universe, protocolid))
       return( NULL);
@@ -41,7 +43,7 @@ void  objc_registerProtocol( Protocol *proto)
    if( ! proto)
       return;
 
-   universe = mulle_objc_get_universe();
+   universe = MulleObjCGetUniverse();
    _mulle_objc_universe_add_protocol( universe, proto);
 }
 
@@ -86,7 +88,7 @@ Protocol *objc_getProtocol( char *name)
    }
 
    protocolid = mulle_objc_protocolid_from_string( name);
-   universe   = mulle_objc_get_universe();
+   universe   = MulleObjCGetUniverse();
    proto      = _mulle_objc_universe_lookup_protocol( universe, protocolid);
    if( proto)
       return( proto);
@@ -125,8 +127,8 @@ Protocol **objc_copyProtocolList( unsigned int *outCount)
    Protocol                     **list;
    struct protocol_copy_ctxt    ctxt;
 
-   universe   = mulle_objc_get_universe();
-   n          = _mulle_objc_universe_count_protocols( universe);
+   universe = MulleObjCGetUniverse();
+   n        = _mulle_objc_universe_count_protocols( universe);
    if( outCount && *outCount < n)
    {
       *outCount = n;
@@ -154,6 +156,7 @@ struct objc_method_description *
       *outCount = 0;
    return( NULL);
 }
+
 
 struct objc_method_description
    protocol_getMethodDescription( Protocol *proto,

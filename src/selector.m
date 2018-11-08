@@ -1,5 +1,7 @@
 #include "selector.h"
 
+#include "include-private.h"
+
 /*
  *
  */
@@ -38,7 +40,7 @@ SEL   sel_registerName( char *str)
       return( 0);
 
    methodid = mulle_objc_methodid_from_string( str);
-   universe = mulle_objc_get_universe();
+   universe = MulleObjCGetUniverse();
    desc     = _mulle_objc_universe_lookup_descriptor( universe, methodid);
    if( desc)
       return( methodid);
@@ -58,7 +60,7 @@ SEL   sel_registerName( char *str)
       _mulle_objc_sprint_untypedsignature( dup->signature, size, n);
    }
 
-   desc = _mulle_objc_universe_unfailingregister_descriptor( universe, dup);
+   desc = _mulle_objc_universe_register_descriptor_nofail( universe, dup);
    if( desc != dup)
    {
       // collision
@@ -71,8 +73,8 @@ SEL   sel_registerName( char *str)
    {
       // don't leak this
       if( n >= 16)
-         mulle_objc_universe_unfailingadd_gift( universe, dup->name);
-      mulle_objc_universe_unfailingadd_gift( universe, dup->name);
+         mulle_objc_universe_add_gift_nofail( universe, dup->name);
+      mulle_objc_universe_add_gift_nofail( universe, dup->name);
    }
    return( desc->methodid);
 }
