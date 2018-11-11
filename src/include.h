@@ -23,7 +23,7 @@
 
 #ifndef __MULLE_OBJC__
 # define __MULLE_OBJC_TPS__
-# define __MULLE_OBJC_FCS__
+# define __MULLE_OBJC_FMC__
 # define __MULLE_OBJC_UNIVERSNAME__   falballa
 #endif
 

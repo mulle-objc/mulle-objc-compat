@@ -23,7 +23,7 @@ Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
    universe  = MulleObjCGetUniverse();
    name      = mulle_objc_universe_strdup( universe, name);
    classid   = mulle_objc_classid_from_string( name);
-   classpair = mulle_objc_universe_new_classpair( universe, classid, name, 0, superclass);
+   classpair = mulle_objc_universe_new_classpair( universe, classid, name, 0, 0, superclass);
    if( ! classpair)
    {
       mulle_allocator_free( _mulle_objc_universe_get_allocator( universe),
@@ -328,7 +328,7 @@ id   objc_getClass( const char *name)
 
     universe = MulleObjCGetUniverse();
     classid  = mulle_objc_classid_from_string( (char *) name);
-    return( _mulle_objc_universe_lookup_infraclass( universe, classid));   // do we have a delayed class handler ?
+    return( (id) _mulle_objc_universe_lookup_infraclass( universe, classid));   // do we have a delayed class handler ?
 }
 
 
@@ -338,7 +338,7 @@ id   objc_getMetaClass( const char *name)
 
     infra = objc_getClass( name);
     if( infra)
-       return( _mulle_objc_infraclass_get_metaclass( infra));
+       return( (id) _mulle_objc_infraclass_get_metaclass( infra));
     return( Nil);
 }
 
@@ -397,10 +397,10 @@ static mulle_objc_walkcommand_t  count_classes( struct _mulle_objc_universe *uni
 
 struct copy_class_info
 {
-   struct _mulle_objc_infraclass   **list;
-   unsigned int                    i;
-   unsigned int                    n;
-   unsigned int                    total;
+   struct _mulle_objc_class   **list;
+   unsigned int               i;
+   unsigned int               n;
+   unsigned int               total;
 };
 
 
@@ -427,7 +427,7 @@ int   objc_getClassList( Class  *buffer, int bufferCount)
    struct copy_class_info        info;
    unsigned int                  n_classes;
 
-   info.list  = buffer;
+   info.list  = (struct _mulle_objc_class **) buffer;
    info.i     = 0;
    info.n     = bufferCount;
    info.total = 0;
@@ -556,8 +556,8 @@ Ivar   class_getInstanceVariable( Class cls, char *name)
 
 static void   _class_addMethod( Class cls,
                                 struct _mulle_objc_descriptor *desc,
-                                SEL sel,
-                                IMP imp,
+                                mulle_objc_methodid_t sel,
+                                mulle_objc_implementation_t imp,
                                 char *types)
 {
    struct _mulle_objc_universe     *universe;
@@ -570,7 +570,7 @@ static void   _class_addMethod( Class cls,
    size = mulle_objc_sizeof_methodlist( 1);
    list = _mulle_objc_universe_calloc( universe, 1, size);
 
-   list->n_methods        = 1;
+   list->n_methods         = 1;
    list->methods[ 0].value = imp;
 
    // if types exist and diverge
@@ -627,7 +627,7 @@ static IMP  _class_replaceMethod( Class cls, SEL sel, IMP imp, char *types, BOOL
             method_setImplementation( m, imp);
       }
       else
-         _class_addMethod( cls, desc, sel, imp, types);
+         _class_addMethod( cls, desc, sel, (mulle_objc_implementation_t) imp, types);
    }
    _mulle_objc_universe_unlock( universe);
 
@@ -894,7 +894,10 @@ Method   *class_copyMethodList( Class cls, unsigned int *outCount)
       ctxt.sentinel  = &result[ count];
       result[ count] = 0;
 
-      _mulle_objc_class_walk_methods( (struct _mulle_objc_class *) cls, MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS, copy_method, &ctxt);
+      _mulle_objc_class_walk_methods( (struct _mulle_objc_class *) cls,
+                                      MULLE_OBJC_CLASS_DONT_INHERIT_SUPERCLASS,
+                                      copy_method,
+                                      &ctxt);
    }
 
    if( outCount)

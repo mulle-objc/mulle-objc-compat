@@ -24,21 +24,15 @@ struct objc_method_description
  * Method
  * This uses the MetaABI and is wildly incompatible, except
  * if you're only passing one or none objects around as a
- * paramater. We don't have stret class. Its better to fail
- * at the link time.
+ * parameter. We don't have stret class. Its better to fail
+ * at link time.
  */
 static inline id   method_invoke( id receiver, Method m, void *_param)
 {
    IMP   imp;
 
-   imp = _mulle_objc_method_get_implementation( m);
+   imp = (IMP) _mulle_objc_method_get_implementation( m);
    return( (*imp)( receiver, _mulle_objc_method_get_methodid( m), _param));
-}
-
-
-static inline id   objc_msgSend( id self, SEL _cmd, void *_param)
-{
-   return( mulle_objc_object_call( self, _cmd, _param));
 }
 
 

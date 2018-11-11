@@ -87,22 +87,14 @@ main()
 
    options_setup_trace "${MULLE_TRACE}"
 
-   local libdir
    local dependencydir
-   local includedir
    local rootdir
 
    rootdir="${PWD}"
-   libdir="lib"
-   includedir="include"
-   dependencydir="${DEPENDENCY_DIR:-../dependency}"
+   dependencydir="${DEPENDENCY_DIR:-dependency}"
 
    r_absolutepath "${dependencydir}"
    dependencydir="${RVAL}"
-   r_absolutepath "${libdir}"
-   libdir="${RVAL}"
-   r_absolutepath "${includedir}"
-   includedir="${RVAL}"
 
    local RVAL
    local sdkpath
@@ -110,7 +102,12 @@ main()
    case "${MULLE_UNAME}" in
       darwin)
          sdkpath="-isysroot '`xcrun --show-sdk-path`'"
-         RPATH_FLAGS="-Wl,-rpath '${libdir}'"
+      ;;
+   esac
+
+   case "${MULLE_UNAME}" in
+      darwin|linux)
+         RPATH_FLAGS="-Wl,-rpath '${dependencydir}/lib'"
       ;;
    esac
 
@@ -136,9 +133,7 @@ main()
          log_info "${srcname}"
 
       	cd "${directory}" &&
-      	eval_exekutor mulle-clang -isystem "'${includedir}'" \
-               	            -isystem "'${dependencydir}/Debug/include'" \
-               	            -isystem "'${dependencydir}/include'" \
+      	eval_exekutor mulle-clang -isystem "'${dependencydir}/include'" \
                	            "-I'${rootdir}'" \
                               "${sdkpath}" \
                               -Wno-objc-root-class \
@@ -147,7 +142,7 @@ main()
                	            -std=gnu99 \
                	            -O0 \
                	            -g \
-               	            "-L'${libdir}'" \
+                              "-L'${dependencydir}/lib'" \
                	            -o "'${exename}'" \
                	            "'${srcname}'" \
                	            -lmulle-objc-compat-standalone \

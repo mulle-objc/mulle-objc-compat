@@ -162,9 +162,8 @@ char   *method_copyArgumentType( Method m, unsigned int index)
 void  method_exchangeImplementations( Method m1, Method m2)
 {
    struct _mulle_objc_universe   *universe;
-
-   IMP   m1_imp;
-   IMP   m2_imp;
+   mulle_objc_implementation_t   m1_imp;
+   mulle_objc_implementation_t   m2_imp;
 
    if ( ! m1 || !m2)
       return;
