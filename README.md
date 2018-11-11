@@ -4,7 +4,18 @@ This library maps
 [Apple runtime](https://developer.apple.com/documentation/objectivec/objective_c_runtime?language=objc)
 functions to their [mulle-objc](//mulle-objc.github.io) counterparts.
 This makes porting of existing programs that use Apple runtime functions easier.
+If you can get by with the limited set of functions, these functions are
+preferable to use over their mulle-objc counterparts for the sake of portability
+and familiarity.
 
+> #### Mental model
+>
+> This library
+>
+> * does not include any other runtime than mulle-objc-runtime.
+> * does not define any functionality that is not part of the Apple runtime
+> * does not implement everything that's in the Apple runtime
+>
 
 ## Limitations
 

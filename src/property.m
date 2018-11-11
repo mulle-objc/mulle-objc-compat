@@ -161,10 +161,10 @@ static BOOL   copyOneAttribute( unsigned int index,
 
 static char   *copyPropertyAttributeValue( char *attrs, const char *name)
 {
-   char *result;
+   char   *result;
 
-   result = nil;
-   iteratePropertyAttributes(attrs, findOneAttribute, (void*)name, &result);
+   result = NULL;
+   iteratePropertyAttributes( attrs, findOneAttribute, (void*) name, &result);
    return( result);
 }
 
@@ -220,7 +220,7 @@ objc_property_attribute_t *copyPropertyAttributeList( char *attrs, unsigned int 
    if (attrcount == 0)
    {
       mulle_free( result);
-      result = nil;
+      result = NULL;
    }
 
    if (outCount)
@@ -262,28 +262,28 @@ void   objc_setProperty( id self,
                          BOOL atomic,
                          signed char shouldCopy)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, atomic, shouldCopy);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, atomic, shouldCopy);
 }
 
 void   objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, NO, 0);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, NO, 0);
 }
 
 void   objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, NO, 1);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, NO, 1);
 }
 
 
 void   objc_setProperty_atomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, YES, 0);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, YES, 0);
 }
 
 void   objc_setProperty_atomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, newValue, YES, 1);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, YES, 1);
 }
 
 

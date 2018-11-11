@@ -20,7 +20,7 @@ id   object_copy( id obj, size_t extra)
       return( obj);
 
    cls  = _mulle_objc_object_get_isa( obj);
-   size = _mulle_objc_class_get_instancesize( cls) - sizeof( struct _mulle_objc_objectheader);
+   size = _mulle_objc_class_get_instancesize( cls);
    dup  = _mulle_objc_infraclass_alloc_instance_extra( (struct _mulle_objc_infraclass *) cls, extra);
    if( ! dup)
       return( dup);
