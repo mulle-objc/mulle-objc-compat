@@ -2,6 +2,7 @@ cmake_minimum_required( VERSION 3.1)
 
 project( mulle-objc-compat C)
 
+# should be behind option but...
 set( CREATE_OBJC_LOADER_INC OFF)
 
 ### mulle-sde environment
