@@ -6,6 +6,8 @@
 #include <errno.h>
 #include <stdlib.h>
 
+#pragma clang diagnostic ignored "-Wparentheses"
+
 
 Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
 {
