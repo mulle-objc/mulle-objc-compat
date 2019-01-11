@@ -146,6 +146,7 @@ main()
                	            -o "'${exename}'" \
                	            "'${srcname}'" \
                	            -lmulle-objc-compat-standalone \
+                              -lmulle-allocator \
                               "${RPATH_FLAGS}" \
                               &&
    		LD_LIBRARY_PATH="${libdir}" ./"${exename}"
