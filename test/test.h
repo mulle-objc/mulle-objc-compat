@@ -23,7 +23,9 @@
 
 #define OBJC_ROOT_CLASS
 #define OBJC_INLINE inline
-#define __unused
+#ifndef __unused
+# define __unused
+#endif
 
 
 static OBJC_INLINE void *objc_collectableZone(void) { return nil; }

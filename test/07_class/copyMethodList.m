@@ -6,34 +6,34 @@
 
 @interface SuperMethods : TestRoot { } @end
 @implementation SuperMethods
-+(BOOL)SuperMethodClass { return NO; } 
-+(BOOL)SuperMethodClass2 { return NO; } 
--(BOOL)SuperMethodInstance { return NO; } 
--(BOOL)SuperMethodInstance2 { return NO; } 
++(BOOL)SuperMethodClass { return NO; }
++(BOOL)SuperMethodClass2 { return NO; }
+-(BOOL)SuperMethodInstance { return NO; }
+-(BOOL)SuperMethodInstance2 { return NO; }
 @end
 
 @interface SubMethods : SuperMethods { } @end
 @implementation SubMethods
-+(BOOL)SubMethodClass { return NO; } 
-+(BOOL)SubMethodClass2 { return NO; } 
--(BOOL)SubMethodInstance { return NO; } 
--(BOOL)SubMethodInstance2 { return NO; } 
++(BOOL)SubMethodClass { return NO; }
++(BOOL)SubMethodClass2 { return NO; }
+-(BOOL)SubMethodInstance { return NO; }
+-(BOOL)SubMethodInstance2 { return NO; }
 @end
 
 @interface SuperMethods (Category) @end
 @implementation SuperMethods (Category)
-+(BOOL)SuperMethodClass { return YES; } 
-+(BOOL)SuperMethodClass2 { return YES; } 
--(BOOL)SuperMethodInstance { return YES; } 
--(BOOL)SuperMethodInstance2 { return YES; } 
++(BOOL)SuperMethodClass { return YES; }
++(BOOL)SuperMethodClass2 { return YES; }
+-(BOOL)SuperMethodInstance { return YES; }
+-(BOOL)SuperMethodInstance2 { return YES; }
 @end
 
 @interface SubMethods (Category) @end
 @implementation SubMethods (Category)
-+(BOOL)SubMethodClass { return YES; } 
-+(BOOL)SubMethodClass2 { return YES; } 
--(BOOL)SubMethodInstance { return YES; } 
--(BOOL)SubMethodInstance2 { return YES; } 
++(BOOL)SubMethodClass { return YES; }
++(BOOL)SubMethodClass2 { return YES; }
+-(BOOL)SubMethodInstance { return YES; }
+-(BOOL)SubMethodInstance2 { return YES; }
 @end
 
 
@@ -48,10 +48,10 @@
 @interface NoMethods : TestRoot @end
 @implementation NoMethods @end
 
-static void checkReplacement(Method *list, const char *name)
+static void checkReplacement(Method *list, char *name)
 {
     Method first = NULL, second = NULL;
-    SEL sel = sel_registerName(name);
+    SEL sel = sel_registerName( name);
     int i;
 
     testassert(list);
@@ -75,7 +75,7 @@ static void checkReplacement(Method *list, const char *name)
 
 int main()
 {
-    // Class SubMethods has not yet been touched, so runtime must attach 
+    // Class SubMethods has not yet been touched, so runtime must attach
     // the lazy categories
     Method *methods;
     unsigned int count;
@@ -92,7 +92,7 @@ int main()
     testassert(count == 4);
     // methods[] should be null-terminated
     testassert(methods[4] == NULL);
-    // Class and category methods may be mixed in the method list thanks 
+    // Class and category methods may be mixed in the method list thanks
     // to linker / shared cache sorting, but a category's replacement should
     // always precede the class's implementation.
     checkReplacement(methods, "SubMethodInstance");
@@ -107,7 +107,7 @@ int main()
     testassert(count == 4);
     // methods[] should be null-terminated
     testassert(methods[4] == NULL);
-    // Class and category methods may be mixed in the method list thanks 
+    // Class and category methods may be mixed in the method list thanks
     // to linker / shared cache sorting, but a category's replacement should
     // always precede the class's implementation.
     checkReplacement(methods, "SubMethodClass");
@@ -138,7 +138,7 @@ int main()
     methods = class_copyMethodList(NULL, &count);
     testassert(!methods);
     testassert(count == 0);
-    
+
     // Check NULL class and count
     methods = class_copyMethodList(NULL, NULL);
     testassert(!methods);

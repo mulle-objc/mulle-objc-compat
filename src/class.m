@@ -823,7 +823,7 @@ BOOL   class_addProtocol( Class cls, PROTOCOL protocol)
 
    protolist->n_protocols               = 1;
    protolist->protocols[ 0].protocolid  = protocol;
-   protolist->protocols[ 0].name        = "\"?\"n";  // we don't know it
+   protolist->protocols[ 0].name        = "???";  // we don't and can't know it
 
    pair = _mulle_objc_infraclass_get_classpair( cls);
    mulle_objc_classpair_add_protocollist_nofail( pair, protolist);

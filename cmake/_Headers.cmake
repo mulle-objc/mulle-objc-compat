@@ -8,7 +8,7 @@ endif()
 set( INCLUDE_DIRS
 src
 src/objc
-) 
+)
 
 set( OBJC_HEADERS
 src/objc/Protocol.h
@@ -47,5 +47,5 @@ src/property.h
 src/protocol.h
 src/runtime.h
 src/selector.h
-) 
+)
 
