@@ -73,6 +73,13 @@ If you create ephemeral instances in your `+load` method,
 you should wrap the code yourself inside an `NSAutoreleasePool`.
 
 
+### Dealing with instanceSize
+
+`self` in mulle-objc is **not** the address that was allocated, but at an
+offset. Conversely `class_getInstanceSize` returns the number of bytes
+to allocate and **not** the space occupied by ivars.
+
+
 ### You can't go as crazy in +initialize
 
 * do not call `[super initialize]`, which is pointless anyway.
