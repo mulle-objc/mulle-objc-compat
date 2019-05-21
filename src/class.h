@@ -107,7 +107,7 @@ static inline char *  class_getName( Class cls)
 //
 static inline size_t   class_getInstanceSize( Class cls)
 {
-   return( mulle_objc_class_get_instancesize( (struct _mulle_objc_class *) cls));
+   return( _mulle_objc_class_get_allocationsize( (struct _mulle_objc_class *) cls));
 }
 
 // this calls initialize

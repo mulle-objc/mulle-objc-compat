@@ -21,8 +21,14 @@
 #include <objc/objc-runtime.h>
 
 
-#define OBJC_ROOT_CLASS
-#define OBJC_INLINE inline
+#ifndef OBJC_ROOT_CLASS
+# define OBJC_ROOT_CLASS
+#endif
+
+#ifndef OBJC_ROOT_CLASS
+# define OBJC_INLINE inline
+#endif
+
 #ifndef __unused
 # define __unused
 #endif

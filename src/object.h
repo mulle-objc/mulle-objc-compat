@@ -24,16 +24,20 @@ static inline Class    object_getClass( id obj)
    return( (Class) mulle_objc_object_get_isa( obj));
 }
 
+
 // not atomic in mulle-objc!
 static inline Class   object_setClass( id obj, Class cls)
 {
    Class   old;
 
+   if( ! obj)
+      return( Nil);
+
    old = object_getClass( obj);
-   if( old)
-      _mulle_objc_object_set_isa( obj, (struct _mulle_objc_class *) cls);
+   _mulle_objc_object_set_isa( obj, (struct _mulle_objc_class *) cls);
    return( old);
 }
+
 
 static inline id   class_createInstance( Class cls, size_t extraBytes)
 {
@@ -45,6 +49,9 @@ static inline id   objc_constructInstance( Class cls, void *bytes)
 {
    void  *obj;
 
+   if( ! obj)
+      return( nil);
+
    obj = _mulle_objc_objectheader_get_object( (struct _mulle_objc_objectheader *) bytes);
    _mulle_objc_object_set_isa( obj, _mulle_objc_infraclass_as_class( cls));
    return( obj);
@@ -55,7 +62,7 @@ static inline id   objc_constructInstance( Class cls, void *bytes)
 //
 static inline void   *objc_destructInstance( id obj)
 {
-    return( obj);
+   return( obj);
 }
 
 id   object_copy( id obj, size_t size);

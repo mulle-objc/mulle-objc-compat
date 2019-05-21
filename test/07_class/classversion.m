@@ -8,7 +8,7 @@ int main()
 {
     Class cls = [TestRoot class];
     testassert(class_getVersion(cls) == 0);
-    testassert(class_getVersion(object_getClass(cls)) > 5);
+//    testassert(class_getVersion(object_getClass(cls)) > 5);
     class_setVersion(cls, 100);
     testassert(class_getVersion(cls) == 100);
 
