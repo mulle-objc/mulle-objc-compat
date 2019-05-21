@@ -69,6 +69,10 @@ main()
             usage
          ;;
 
+         --serial|--no-parallel|--parallel)
+            #snarf and ignore
+         ;;
+
          --)
             break
          ;;
@@ -112,6 +116,10 @@ main()
    esac
 
 
+   local linkcommand
+
+   linkcommand="`mulle-sde test linkorder`"
+
    local testfile
    local srcname
    local exename
@@ -142,13 +150,11 @@ main()
                	            -std=gnu99 \
                	            -O0 \
                	            -g \
-                              "-L'${dependencydir}/lib'" \
                	            -o "'${exename}'" \
                	            "'${srcname}'" \
-               	            -lmulle-objc-compat-standalone \
-                              -lmulle-allocator \
-                              "${RPATH_FLAGS}" \
+               	            "${linkcommand}" \
                               &&
+
    		LD_LIBRARY_PATH="${libdir}" ./"${exename}"
       ) || exit 1
    done

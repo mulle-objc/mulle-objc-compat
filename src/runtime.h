@@ -7,6 +7,32 @@
 # define OBJC_HAVE_TAGGED_POINTERS   1
 #endif
 
+
+#define OBJC_ARC_UNAVAILABLE
+#define OBJC_GC_UNAVAILABLE
+#define OBJC_SWIFT_UNAVAILABLE( ignore)
+#define OBJC_AVAILABLE( a, b, c, d, e)
+#define OBJC_DEPRECATED( ignore)
+#define OBJC_API_VERSION 2
+#define OBJC_ISA_AVAILABILITY
+#define OBJC_EXTERN extern
+#define OBJC_IMPORT extern
+#define OBJC_INLINE inline
+#define OBJC_VISIBLE
+
+#ifndef OBJC_ROOT_CLASS
+# if __has_attribute( objc_root_class)
+#  define OBJC_ROOT_CLASS __attribute__((objc_root_class))
+# else
+#  define OBJC_ROOT_CLASS
+# endif
+#endif
+
+#ifdef __OBJC_GC__
+# error Objective-C garbage collection is not supported.
+#endif
+
+
 //
 // TODO: think about introducing using the runtime lock on this level
 //

@@ -31,6 +31,4 @@
 
 #include <MulleObjC/mulle-objc.h>
 
-/* You can add some more include statements here */
-
 #endif

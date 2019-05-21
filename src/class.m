@@ -427,16 +427,14 @@ int   objc_getClassList( Class  *buffer, int bufferCount)
 {
    struct _mulle_objc_universe   *universe;
    struct copy_class_info        info;
-   unsigned int                  n_classes;
 
    info.list  = (struct _mulle_objc_class **) buffer;
    info.i     = 0;
    info.n     = bufferCount;
    info.total = 0;
 
-   n_classes = 0;
    universe  = MulleObjCGetUniverse();
-   mulle_objc_universe_walk_infraclasses( universe, copy_classes, &n_classes);
+   mulle_objc_universe_walk_infraclasses( universe, copy_classes, &info);
 
    if( ! buffer)
       return( (int) info.total);
@@ -533,13 +531,15 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
 
 Ivar   class_getClassVariable( Class cls, char *name)
 {
-   mulle_objc_ivarid_t   ivarid;
+   mulle_objc_ivarid_t                         ivarid;
+   struct mulle_concurrent_hashmapenumerator   rover;
+   char                                        *s;
 
    if( ! cls || ! name || _mulle_objc_class_is_metaclass( (struct _mulle_objc_class *) cls))
       return( NULL);
 
-   return( _mulle_objc_infraclass_get_cvar( (struct _mulle_objc_infraclass *) cls,
-                                            name));
+   // its not compatible the way we do class variables
+   return( NULL);
 }
 
 
@@ -845,6 +845,7 @@ struct method_copy_ctxt
 
 static mulle_objc_walkcommand_t
    count_method( struct _mulle_objc_method *method,
+                 struct _mulle_objc_methodlist *list,
                  struct _mulle_objc_class *cls,
                  void *info)
 {
@@ -856,6 +857,7 @@ static mulle_objc_walkcommand_t
 
 static mulle_objc_walkcommand_t
    copy_method( struct _mulle_objc_method *method,
+                struct _mulle_objc_methodlist *list,
                 struct _mulle_objc_class *cls,
                 void *info)
 {
@@ -1183,8 +1185,10 @@ IMP  class_getMethodImplementation( Class aClass, SEL sel)
 
    if( ! _mulle_objc_class_get_state_bit( cls, MULLE_OBJC_CLASS_INITIALIZE_DONE))
       _mulle_objc_class_setup( cls);
-   imp = (IMP) _mulle_objc_class_lookup_implementation_nocache_noforward( cls,
-                                                                             (mulle_objc_methodid_t) sel);
+
+   // this should cache and resolve
+   imp = (IMP) _mulle_objc_class_lookup_implementation( cls,
+                                                       (mulle_objc_methodid_t) sel);
    return( imp);
 }
 
