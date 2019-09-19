@@ -49,7 +49,7 @@ static inline id   objc_constructInstance( Class cls, void *bytes)
 {
    void  *obj;
 
-   if( ! obj)
+   if( ! cls)
       return( nil);
 
    obj = _mulle_objc_objectheader_get_object( (struct _mulle_objc_objectheader *) bytes);
