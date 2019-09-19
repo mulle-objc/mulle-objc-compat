@@ -131,9 +131,9 @@ main()
    do
    	IFS="${DEFAULTIFS}"
       (
-         r_fast_basename "${testfile}"
+         r_basename "${testfile}"
          srcname="${RVAL}"
-         r_fast_dirname "${testfile}"
+         r_dirname "${testfile}"
          directory="${RVAL}"
          r_extensionless_basename "${testfile}"
       	exename="${RVAL}.exe"

@@ -102,7 +102,12 @@ static inline id    object_getIvar( id obj, Ivar ivar)
 
 static inline void  *object_getIndexedIvars( id obj)
 {
-   return( mulle_objc_object_get_extra( obj));
+   void        *extra;
+   uintptr_t   ivars;
+
+   extra = mulle_objc_object_get_extra( obj);
+   ivars = ((uintptr_t) extra + (sizeof( void *) - 1)) & ~(sizeof( void *) - 1);
+   return( (void *) ivars);
 }
 
 

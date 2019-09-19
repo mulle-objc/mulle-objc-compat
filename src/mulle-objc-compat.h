@@ -5,7 +5,7 @@
  *
  *  version:  major, minor, patch
  */
-#define MULLE_OBJC_COMPAT_VERSION  ((0 << 20) | (15 << 8) | 0)
+#define MULLE_OBJC_COMPAT_VERSION  ((0 << 20) | (16 << 8) | 0)
 
 #include "runtime.h"
 #include "method.h"
@@ -17,7 +17,7 @@
 #include "selector.h"
 
 #ifdef MULLE_OBJC_RUNTIME_VERSION
-# if MULLE_OBJC_RUNTIME_VERSION < ((0 << 20) | (14 << 8) | 0)
+# if MULLE_OBJC_RUNTIME_VERSION < ((0 << 20) | (16 << 8) | 0)
 #  error "mulle-objc-runtime is too old"
 # endif
 #endif
