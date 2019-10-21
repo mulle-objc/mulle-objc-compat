@@ -1,7 +1,3 @@
-### 0.16.1
-
-* fix tests
-
 ## 0.16.0
 
 * Various small improvements
