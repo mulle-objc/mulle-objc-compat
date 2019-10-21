@@ -118,7 +118,9 @@ main()
 
    local linkcommand
 
-   linkcommand="`mulle-sde test linkorder`"
+   linkcommand="`exekutor mulle-sde test linkorder --startup`" || exit 1
+
+   log_fluff "linkorder: ${linkcommand}"
 
    local testfile
    local srcname
@@ -152,10 +154,8 @@ main()
                	            -g \
                	            -o "'${exename}'" \
                	            "'${srcname}'" \
-               	            "${linkcommand}" \
-                              &&
-
-   		LD_LIBRARY_PATH="${libdir}" ./"${exename}"
+               	            "${linkcommand}" &&
+   		eval_exekutor "LD_LIBRARY_PATH=''${dependencydir}/lib" "./'${exename}'"
       ) || exit 1
    done
    IFS="${DEFAULTIFS}"
