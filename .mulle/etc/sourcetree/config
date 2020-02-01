@@ -1,1 +1,1 @@
-MulleObjC;${MULLE_OBJC_NODETYPE:-tar};no-all-load,no-bequeath,no-header,no-import,no-link,no-singlephase;FEAA711E-D81B-4689-86C7-BD40782DB954;${MULLE_OBJC_URL:-https://github.com/mulle-objc/MulleObjC/archive/${MULLE_BRANCH}.tar.gz};${MULLE_OBJC_BRANCH:-latest};;;
+MulleObjC;${MULLE_OBJC_NODETYPE:-tar};no-all-load,no-bequeath,no-header,no-import,no-link,no-singlephase;FEAA711E-D81B-4689-86C7-BD40782DB954;${MULLE_OBJC_URL:-https://github.com/mulle-objc/MulleObjC/archive/${MULLE_TAG}.tar.gz};;${MULLE_OBJC_TAG:-latest};;
