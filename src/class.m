@@ -47,7 +47,10 @@ void   objc_registerClassPair( Class infra)
    struct _mulle_objc_universe    *universe;
    struct _mulle_objc_metaclass   *meta;
 
-   universe = MulleObjCGetUniverse();
+   if( ! infra)
+      return;
+
+   universe = _mulle_objc_infraclass_get_universe( infra);
    meta     = _mulle_objc_infraclass_get_metaclass( infra);
 
    // fix up missing stuff, since mulle-objc-runtime has special needs
