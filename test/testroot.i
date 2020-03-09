@@ -190,7 +190,7 @@ plusretaincount_fn(void *self __unused, SEL _cmd __unused) {
 
 -(void) dealloc {
     _mulle_atomic_pointer_increment(&TestRootDealloc);
-    _mulle_objc_object_free( ( struct _mulle_objc_object *) self);
+    _mulle_objc_instance_free( ( struct _mulle_objc_object *) self);
 }
 
 +(void) finalize {
