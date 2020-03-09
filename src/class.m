@@ -71,7 +71,7 @@ void   objc_registerClassPair( Class infra)
 void   objc_disposeClassPair( Class cls)
 {
    struct _mulle_objc_universe    *universe;
-   struct _mulle_objc_classpair   *classpair;
+   struct _mulle_objc_classpair   *pair;
    struct mulle_allocator         *allocator;
 
    if( ! cls)
@@ -79,10 +79,10 @@ void   objc_disposeClassPair( Class cls)
 
    universe  = MulleObjCGetUniverse();
    allocator = _mulle_objc_universe_get_allocator( universe);
-   classpair = _mulle_objc_infraclass_get_classpair( cls);
+   pair      = _mulle_objc_infraclass_get_classpair( cls);
 
    mulle_objc_universe_remove_infraclass( universe, cls);
-   mulle_objc_classpair_free( classpair, allocator);
+   mulle_objc_classpair_free( pair, allocator);
 }
 
 

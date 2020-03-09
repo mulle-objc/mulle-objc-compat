@@ -71,7 +71,7 @@ id   object_copy( id obj, size_t size);
 static inline id   object_dispose( id obj)
 {
    objc_destructInstance( obj);
-   mulle_objc_object_free( (struct _mulle_objc_object *) obj);
+   mulle_objc_instance_free( (struct _mulle_objc_object *) obj);
    return( nil);
 }
 
