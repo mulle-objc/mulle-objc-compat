@@ -1,3 +1,8 @@
+## 0.17.0
+
+* adapt to renames in the mulle-objc runtime
+
+
 ## 0.16.0
 
 * Various small improvements

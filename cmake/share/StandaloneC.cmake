@@ -27,7 +27,7 @@ if( STANDALONE)
    endif()
 
    if( NOT STANDALONE_DEFINITIONS)
-      set( STANDALONE_DEFINITIONS ${MULLE_OBJC_COMPAT_DEFINITIONS})
+      set( STANDALONE_DEFINITIONS ${mulle_objc_compat_DEFINITIONS})
    endif()
 
    #
