@@ -9,10 +9,13 @@ set( SOURCES
 src/class.m
 src/method.m
 src/mulle-objc-compat.m
-src/mulle-objc-compat-standalone.m
 src/object.m
 src/property.m
 src/protocol.m
 src/runtime.m
 src/selector.m
+)
+
+set( STANDALONE_SOURCES
+src/mulle-objc-compat-standalone.m
 )
