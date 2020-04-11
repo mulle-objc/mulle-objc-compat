@@ -34,20 +34,17 @@ Build Status | Release Version
 * The library must be compiled with mulle-clang (since the multiverse changes)
 
 
-## How to build
+## Add
 
-This is a [mulle-sde](https://mulle-sde.github.io/) project.
-
-It has it's own virtual environment, that will be automatically setup for you
-once you enter it with:
+This is project is a [mulle-sde](https://mulle-sde.github.io/) project.
+Add it with:
 
 ```
-mulle-sde mulle-objc-compat
+mulle-sde dependency add --objc --github mulle-objc mulle-objc-compat
 ```
 
-Now you can let **mulle-sde** fetch the required dependencies and build the
-project for you:
+## Author
 
-```
-mulle-sde craft
-```
+[Nat!](//www.mulle-kybernetik.com/weblog) for
+[Mulle kybernetiK](//www.mulle-kybernetik.com) and
+[Codeon GmbH](//www.codeon.de)
