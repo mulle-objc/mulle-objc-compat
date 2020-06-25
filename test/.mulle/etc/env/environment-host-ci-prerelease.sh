@@ -305,3 +305,21 @@ export MULLE_OBJC_RUNTIME_STARTUP_URL="https://github.com/mulle-objc/mulle-objc-
 export MULLE_OBJC_RUNTIME_STARTUP_BRANCH="prerelease"
 
 
+#
+#
+#
+export MULLE_DATA_URL="https://github.com/mulle-c/mulle-data.git"
+
+
+#
+#
+#
+export MULLE_DATA_BRANCH="prerelease"
+
+
+#
+#
+#
+export MULLE_DATA_NODETYPE="git"
+
+

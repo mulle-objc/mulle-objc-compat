@@ -78,3 +78,10 @@ SEL   sel_registerName( char *str)
    }
    return( desc->methodid);
 }
+
+
+// good to have this non-inline for debuggers
+SEL   sel_getUid( char *str)
+{
+    return( sel_registerName( str));
+}

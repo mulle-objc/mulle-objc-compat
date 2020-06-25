@@ -38,7 +38,7 @@ static void *
 retain_fn(void *self, SEL _cmd __unused) {
     _mulle_atomic_pointer_increment(&TestRootRetain);
 
-    _mulle_objc_object_inlineretain(self);
+    _mulle_objc_object_retain_inline(self);
     return( self);
 }
 
@@ -46,7 +46,7 @@ static void
 release_fn(void *self, SEL _cmd __unused) {
     _mulle_atomic_pointer_increment(&TestRootRelease);
 
-    _mulle_objc_object_inlinerelease(self);
+    _mulle_objc_object_release_inline(self);
 }
 
 static void *

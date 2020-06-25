@@ -39,6 +39,11 @@ static OBJC_INLINE void *objc_collectableZone(void) { return nil; }
 
 // Configuration macros
 
+// Crazy APPLE changes CPP semantics
+#ifndef TARGET_OS_WIN32
+# define TARGET_OS_WIN32 0
+#endif
+
 #if !__LP64__ || TARGET_OS_WIN32 || __OBJC_GC__ || TARGET_IPHONE_SIMULATOR
 #   define SUPPORT_NONPOINTER_ISA 0
 #elif __x86_64__

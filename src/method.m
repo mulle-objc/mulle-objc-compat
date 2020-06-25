@@ -47,7 +47,7 @@ static struct type_range  _signature_findTypeRange_skip( char *start, unsigned i
    if( ! s)
       return( (struct type_range) { -1, 0 } );
 
-   mulle_objc_signature_supply_next_typeinfo( s, &info);
+   mulle_objc_signature_supply_typeinfo( s, NULL, &info);
    range.offset = (int) (info.type - start);
    range.length = (int) (info.pure_type_end - info.type);
    return( range);

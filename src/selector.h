@@ -26,11 +26,6 @@ static inline BOOL   sel_isEqual( SEL lhs, SEL rhs)
 
 
 SEL   sel_registerName( char *str);
-
-
-static inline SEL   sel_getUid( char *str)
-{
-    return( sel_registerName( str));
-}
+SEL   sel_getUid( char *str);
 
 #endif
