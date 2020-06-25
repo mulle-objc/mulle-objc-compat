@@ -1,6 +1,6 @@
 # mulle-objc-compat
 
-🍏 Compatibility layer with Apple Objective-C runtime functions
+#### 🍏 Compatibility layer with Apple Objective-C runtime functions
 
 This library maps
 [Apple runtime](https://developer.apple.com/documentation/objectivec/objective_c_runtime?language=objc)
@@ -11,9 +11,9 @@ preferable to use over their mulle-objc counterparts for the sake of portability
 and familiarity.
 
 
-Build Status | Release Version
--------------|-----------------------------------
-[![Build Status](https://travis-ci.org/mulle-objc/mulle-objc-compat.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-objc-compat) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/mulle-objc-compat.svg) [![Build Status](https://travis-ci.org/mulle-objc/mulle-objc-compat.svg?branch=release)](https://travis-ci.org/mulle-objc/mulle-objc-compat)
+| Release Version
+|-----------------------------------
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/mulle-objc-compat.svg) [![Build Status](https://github.com/mulle-objc/mulle-objc-compat/workflows/CI/badge.svg?branch=release)](https://github.com/mulle-objc/mulle-objc-compat/workflows)
 
 
 

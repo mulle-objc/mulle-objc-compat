@@ -14,7 +14,7 @@ typedef mulle_objc_categoryid_t  Category;
 /*
  * pointer indirection fits tests better
  */
-#define _objc_msgForward  *mulle_objc_method_get_implementation( mulle_objc_global_inlineget_universe( MULLE_OBJC_DEFAULTUNIVERSEID)->classdefaults.forwardmethod)
+#define _objc_msgForward  *mulle_objc_method_get_implementation( mulle_objc_global_get_universe_inline( MULLE_OBJC_DEFAULTUNIVERSEID)->classdefaults.forwardmethod)
 #define _objc_msgForward_stret   _objc_msgForward
 
 /*

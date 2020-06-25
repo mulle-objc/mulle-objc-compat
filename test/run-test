@@ -56,6 +56,10 @@ EOF
 
 main()
 {
+   local flags
+
+   flags="-O0 -g -DMULLE_TEST"
+
    while [ $# -ne 0 ]
    do
       if options_technical_flags "$1"
@@ -71,6 +75,14 @@ main()
 
          --serial|--no-parallel|--parallel)
             #snarf and ignore
+         ;;
+
+         --release)
+            flags="-O3 -g -DNDEBUG -DMULLE_TEST"
+         ;;
+
+         --debug)
+            flags="-O0 -g -DMULLE_TEST"
          ;;
 
          --)
@@ -150,8 +162,7 @@ main()
                               -DOBJC_NO_GC \
                               -D__OBJC2__ \
                	            -std=gnu99 \
-               	            -O0 \
-               	            -g \
+               	            ${flags} \
                	            -o "'${exename}'" \
                	            "'${srcname}'" \
                	            "${linkcommand}" &&

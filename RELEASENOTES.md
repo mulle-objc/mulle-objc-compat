@@ -1,3 +1,10 @@
+## 0.18.0
+
+* uninline `sel_getUid` for debuggers
+* adapt to changes in mulle-objc-runtime
+* fix apple cpp craziness
+
+
 ### 0.17.1
 
 * new mulle-sde project structure

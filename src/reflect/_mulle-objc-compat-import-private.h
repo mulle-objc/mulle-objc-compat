@@ -12,8 +12,12 @@
 #ifndef _mulle_objc_compat_import_private_h__
 #define _mulle_objc_compat_import_private_h__
 
-#include "_mulle-objc-compat-include-private.h"
-
 /* no headers */
+
+#ifdef __has_include
+# if __has_include( "_mulle-objc-compat-include.h")
+#  include "_mulle-objc-compat-include-private.h"
+# endif
+#endif
 
 #endif

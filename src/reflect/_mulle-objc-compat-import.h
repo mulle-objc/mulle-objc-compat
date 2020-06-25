@@ -14,7 +14,11 @@
 
 /* no headers */
 
-#include "_mulle-objc-compat-include.h"
+#ifdef __has_include
+# if __has_include( "_mulle-objc-compat-include.h")
+#  include "_mulle-objc-compat-include.h"
+# endif
+#endif
 
 
 #endif
