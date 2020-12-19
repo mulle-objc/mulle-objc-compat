@@ -1,0 +1,16 @@
+{
+   "name" : "mulle-objc-compat",
+   "version" : "0.18.0",
+   "description" : "🍏 Compatibility layer with Apple Objective-C runtime functions",
+   "homepage" : "https://github.com/mulle-objc/mulle-objc-compat",
+   "bugs" : "https://github.com/mulle-objc/mulle-objc-compat/issues",
+   "keywords" : [],
+   "license" : "UNLICENSED",
+   "repository" : {
+      "type" : "git",
+      "url" : "mulle-objc/mulle-objc-compat"
+   },
+   "dependencies" : {
+      "MulleObjC" : "mulle-objc/MulleObjC"
+   }
+}
