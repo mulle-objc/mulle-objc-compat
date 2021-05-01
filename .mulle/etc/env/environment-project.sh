@@ -37,18 +37,18 @@ export PROJECT_EXTENSIONS="m:aam:c"
 #
 #
 #
-export PROJECT_IDENTIFIER="mulle_objc_compat"
 
-
-#
-#
-#
-export PROJECT_DOWNCASE_IDENTIFIER="mulle_objc_compat"
 
 
 #
 #
 #
-export PROJECT_UPCASE_IDENTIFIER="MULLE_OBJC_COMPAT"
+
+
+
+#
+#
+#
+
 
 

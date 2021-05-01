@@ -45,15 +45,24 @@ static inline id   class_createInstance( Class cls, size_t extraBytes)
 }
 
 
+//
+// assume that constructInstance is called for "malloced" space and that
+// the user is responsible for clearing out the ivat space, we do have to
+// init the meta space though
+//
 static inline id   objc_constructInstance( Class cls, void *bytes)
 {
-   void  *obj;
+   void                             *obj;
+   struct _mulle_objc_objectheader  *header;
+   struct _mulle_objc_class         *_cls;
 
    if( ! cls)
       return( nil);
 
-   obj = _mulle_objc_objectheader_get_object( (struct _mulle_objc_objectheader *) bytes);
-   _mulle_objc_object_set_isa( obj, _mulle_objc_infraclass_as_class( cls));
+   _cls   = _mulle_objc_infraclass_as_class( cls);
+   header = _mulle_objc_alloc_get_objectheader( bytes, _cls->headerextrasize);
+   _mulle_objc_objectheader_init( header, _cls, _cls->headerextrasize, _mulle_objc_memory_is_not_zeroed);
+   obj    = _mulle_objc_objectheader_get_object( header);
    return( obj);
 }
 

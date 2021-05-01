@@ -27,7 +27,7 @@
 # define __MULLE_OBJC_UNIVERSNAME__   falballa
 #endif
 
-#include "_mulle-objc-compat-include.h"
+// #include "_mulle-objc-compat-include.h"
 
 #include <MulleObjC/mulle-objc.h>
 
