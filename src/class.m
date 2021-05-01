@@ -639,6 +639,7 @@ static IMP  _class_replaceMethod( Class cls, SEL sel, IMP imp, char *types, BOOL
    return( old);
 }
 
+
 IMP   class_replaceMethod( Class cls, SEL sel, IMP imp, char *types)
 {
    return( _class_replaceMethod( cls, sel, imp, types, YES));
@@ -652,7 +653,6 @@ BOOL   class_addMethod( Class cls, SEL sel, IMP imp, char *types)
    old = _class_replaceMethod( cls, sel, imp, types, NO);
    return( ! old);
 }
-
 
 
 static char   *copyPropertyAttributeString( objc_property_attribute_t *attrs,
