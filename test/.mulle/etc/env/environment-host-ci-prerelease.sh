@@ -1,4 +1,3 @@
-# Fill it with mulle-env envirionment --scope  set <key> <value>
 #
 # mulle-testallocator nodetype: ${MULLE_TESTALLOCATOR_NODETYPE:-tar}
 #
@@ -252,6 +251,24 @@ export MULLE_VARARG_BRANCH="prerelease"
 
 
 #
+# mulle-data nodetype: ${MULLE_DATA_NODETYPE:-tar}
+#
+export MULLE_DATA_NODETYPE="git"
+
+
+#
+# mulle-data url: ${MULLE_DATA_URL:-https://github.com/mulle-c/mulle-data/archive/${MULLE_TAG}.tar.gz}
+#
+export MULLE_DATA_URL="https://github.com/mulle-c/mulle-data.git"
+
+
+#
+# mulle-data branch: ${MULLE_DATA_BRANCH}
+#
+export MULLE_DATA_BRANCH="prerelease"
+
+
+#
 # mulle-container nodetype: ${MULLE_CONTAINER_NODETYPE:-tar}
 #
 export MULLE_CONTAINER_NODETYPE="git"
@@ -303,23 +320,5 @@ export MULLE_OBJC_RUNTIME_STARTUP_URL="https://github.com/mulle-objc/mulle-objc-
 # mulle-objc-runtime-startup branch: ${MULLE_OBJC_RUNTIME_STARTUP_BRANCH}
 #
 export MULLE_OBJC_RUNTIME_STARTUP_BRANCH="prerelease"
-
-
-#
-#
-#
-export MULLE_DATA_URL="https://github.com/mulle-c/mulle-data.git"
-
-
-#
-#
-#
-export MULLE_DATA_BRANCH="prerelease"
-
-
-#
-#
-#
-export MULLE_DATA_NODETYPE="git"
 
 
