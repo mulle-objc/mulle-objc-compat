@@ -26,9 +26,9 @@ void   objc_setForwardHandler( void *fwd, void *fwd_stret)
    if( ! fwd)
       return;
 
-   forward.descriptor.name      = "forward::";
+   forward.descriptor.name      = "forward:";
    forward.descriptor.methodid  = mulle_objc_methodid_from_string( forward.descriptor.name);
-   forward.descriptor.signature = "v@:@@";
+   forward.descriptor.signature = "^v@:^v";
    forward.implementation       = fwd;
 
    universe = MulleObjCGetUniverse();
