@@ -28,6 +28,10 @@
 #endif
 
 // #include "_mulle-objc-compat-include.h"
+#ifndef MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+# define MULLE_OBJC_COMPAT_EXTERN_GLOBAL MULLE_C_EXTERN_GLOBAL
+#endif
+
 
 #include <MulleObjC/mulle-objc.h>
 

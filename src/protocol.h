@@ -28,16 +28,26 @@ typedef struct _mulle_objc_protocol   Protocol;
 /* protocol struct support (initialization only), this is not the same
    as @protocol() which is PROTOCOL which is a hash value
  */
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 Protocol *objc_getProtocol( char *name);
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 Protocol *objc_allocateProtocol( char *name);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void objc_registerProtocol( Protocol *proto);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void protocol_addMethodDescription( Protocol *proto, 
                                     SEL name, 
                                     char *types, 
                                     BOOL isRequiredMethod, 
                                     BOOL isInstanceMethod);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void protocol_addProtocol( Protocol *proto, PROTOCOL addition);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void protocol_addProperty( Protocol *proto, 
                            char *name, 
                            objc_property_attribute_t *attributes, 
@@ -75,16 +85,22 @@ struct objc_method_description
                                    SEL aSel, 
                                    BOOL isRequiredMethod, 
                                    BOOL isInstanceMethod);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 objc_property_t *protocol_copyPropertyList( Protocol *proto, 
                                             unsigned int *outCount);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 objc_property_t  protocol_getProperty( Protocol *proto, 
                                        char *name, 
                                        BOOL isRequiredProperty, 
                                        BOOL isInstanceProperty);
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 PROTOCOL *protocol_copyProtocolList( Protocol *proto, 
                                      unsigned int *outCount);
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 Protocol **objc_copyProtocolList(unsigned int *outCount);
 
 

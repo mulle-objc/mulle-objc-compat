@@ -32,13 +32,15 @@ static inline char   *property_getAttributes( objc_property_t property)
 }
 
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 char   *property_copyAttributeValue( objc_property_t property, char *attributeName);
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 objc_property_attribute_t *property_copyAttributeList( objc_property_t property,
                                                        unsigned int *outCount);
 
 
-
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void   objc_setProperty( id self,
                          SEL _cmd,
                          ptrdiff_t offset,
@@ -46,10 +48,16 @@ void   objc_setProperty( id self,
                          BOOL atomic,
                          signed char shouldCopy);
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void   objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void   objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset);
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void   objc_setProperty_atomic(id self, SEL _cmd, id newValue, ptrdiff_t offset);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void   objc_setProperty_atomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset);
 
 #endif

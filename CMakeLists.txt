@@ -1,6 +1,8 @@
 cmake_minimum_required( VERSION 3.1)
 
 project( mulle-objc-compat C)
+add_definitions( -DMULLE_OBJC_COMPAT_EXTERN_GLOBAL=extern)
+
 
 # should be behind option but...
 set( CREATE_OBJC_LOADER_INC OFF)

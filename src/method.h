@@ -53,9 +53,16 @@ static inline char *   method_getTypeEncoding(Method m)
    return( mulle_objc_method_get_signature( m));
 }
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 char * method_copyReturnType(Method m);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 char * method_copyArgumentType(Method m, unsigned int index);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void method_getReturnType(Method m, char *dst, size_t dst_len);
+
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void method_getArgumentType(Method m, unsigned int index, char *dst, size_t dst_len);
 
 
@@ -86,6 +93,7 @@ static inline IMP   method_setImplementation( Method m, IMP imp)
 }
 
 
+MULLE_OBJC_COMPAT_EXTERN_GLOBAL
 void  method_exchangeImplementations(Method m1, Method m2);
 
 #endif
