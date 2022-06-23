@@ -74,7 +74,7 @@ static inline void   *objc_destructInstance( id obj)
    return( obj);
 }
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 id   object_copy( id obj, size_t size);
 
 
@@ -121,10 +121,10 @@ static inline void  *object_getIndexedIvars( id obj)
 }
 
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 Ivar  object_getInstanceVariable( id obj, char *name, void **outValue);
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 Ivar  object_setInstanceVariable( id obj, char *name, void *value);
 
 
@@ -148,10 +148,10 @@ static inline Class   gdb_object_getClass( id obj)
 }
 
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 IMP   object_getMethodImplementation( id obj, SEL sel);
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 IMP   object_getMethodImplementation_stret( id obj, SEL sel);
 
 #endif

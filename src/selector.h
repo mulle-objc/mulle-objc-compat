@@ -25,10 +25,10 @@ static inline BOOL   sel_isEqual( SEL lhs, SEL rhs)
 }
 
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 SEL   sel_registerName( char *str);
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 SEL   sel_getUid( char *str);
 
 #endif

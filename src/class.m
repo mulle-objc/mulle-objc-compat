@@ -269,7 +269,7 @@ Class   objc_duplicateClass( Class original, char *name, size_t extraBytes)
                               _mulle_objc_object_get_isa( original_meta));
 
    _mulle_objc_class_set_superclass( _mulle_objc_metaclass_as_class( meta),
-                                     (struct _mulle_objc_class *) _mulle_objc_metaclass_get_superclass( original_meta));
+                                     _mulle_objc_metaclass_get_superclass( original_meta));
 
    _mulle_objc_infraclass_set_coderversion( infra,
                                             _mulle_objc_infraclass_get_coderversion( original));

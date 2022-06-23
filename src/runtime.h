@@ -47,13 +47,13 @@ static inline BOOL   objc_collecting_enabled( void)
 }
 
 
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 void   _objc_registerTaggedPointerClass( unsigned int index, Class cls);
 //
 // stret parameter is ignored. Will install and override forwarding in
 // all present and future classes
 //
-MULLE_OBJC_COMPAT_EXTERN_GLOBAL
+MULLE_OBJC_COMPAT_GLOBAL
 void   objc_setForwardHandler( void *fwd, void *fwd_stret);
 
 #endif

@@ -1,7 +1,6 @@
-cmake_minimum_required( VERSION 3.1)
+cmake_minimum_required( VERSION 3.15)
 
 project( mulle-objc-compat C)
-add_definitions( -DMULLE_OBJC_COMPAT_EXTERN_GLOBAL=extern)
 
 
 # should be behind option but...
