@@ -13,7 +13,7 @@ and familiarity.
 
 | Release Version
 |-----------------------------------
-| ![Mulle kybernetiK tag](//img.shields.io/github/tag/mulle-objc/mulle-objc-compat.svg) [![Build Status](//github.com/mulle-objc/mulle-objc-compat/workflows/CI/badge.svg?branch=release)](//github.com/mulle-objc/mulle-objc-compat/actions)
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/mulle-objc-compat.svg) [![Build Status](https://github.com/mulle-objc/mulle-objc-compat/workflows/CI/badge.svg?branch=release)](//github.com/mulle-objc/mulle-objc-compat/actions)
 
 
 
@@ -39,7 +39,7 @@ and familiarity.
 This is project is a [mulle-sde](//mulle-sde.github.io/) project.
 Add it with:
 
-```
+``` sh
 mulle-sde dependency add --objc --github mulle-objc mulle-objc-compat
 ```
 
