@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /usr/bin/env mulle-bash
 #
 #   Copyright (c) 2018 Nat! - Mulle kybernetiK
 #   All rights reserved.
@@ -35,55 +35,6 @@
 
 MULLE_EXECUTABLE_VERSION="0.0.0"
 
-##########################################################################
-###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
-###########################################################################
-# #
-# # PRELUDE - Standard startup code for loading mulle-bashfunctions
-# #
-###
-
-#
-# Figure out MULLE_BASHFUNCTIONS_LIBEXEC_DIR on this machine if needed.
-#
-if [ -z "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}" ]
-then
-   MULLE_BASHFUNCTIONS_LIBEXEC_DIR="`mulle-bashfunctions libexec-dir`" || exit 1
-   export MULLE_BASHFUNCTIONS_LIBEXEC_DIR
-fi
-
-#
-# The booter reruns the executable either with bash or zsh, whatever the
-# system provides. On the second run --no-auto-shell will be set first.
-#
-if [ "$1" != --no-auto-shell ]
-then
-   . "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}/mulle-boot.sh" || exit 1
-else
-   shift    # get rid of --no-auto-shell
-fi
-
-
-#
-# Include mulle-bashfunctions.sh         : default functions
-#         mulle-bashfunctions-none.sh    : almost no functions
-#         mulle-bashfunctions-minimal.sh : few functions for basic scripts
-#         mulle-bashfunctions-all.sh     : everything, even obscure functions
-#
-# Do this first to get aliases
-#
-MULLE_EXECUTABLE="${BASH_SOURCE[0]:-${(%):-%x}}"
-
-. "${MULLE_BASHFUNCTIONS_LIBEXEC_DIR}/mulle-bashfunctions.sh" || exit 1
-
-###
-# # Now we are in bash or zsh with mulle-bashfunctions loaded
-# #
-###########################################################################
-###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###   ###
-###########################################################################
-
-
 
 usage()
 {
@@ -110,8 +61,10 @@ EOF
 main()
 {
    local flags
+   local configuration
 
    flags="-O0 -g -DMULLE_TEST"
+   configuration="Debug"
 
    while [ $# -ne 0 ]
    do
@@ -132,10 +85,12 @@ main()
 
          --release)
             flags="-O3 -g -DNDEBUG -DMULLE_TEST"
+            configuration="Release"
          ;;
 
          --debug)
             flags="-O0 -g -DMULLE_TEST"
+            configuration="Debug"
          ;;
 
          --)
@@ -159,11 +114,9 @@ main()
    local dependencydir
    local rootdir
 
-   rootdir="${PWD}"
-   dependencydir="${DEPENDENCY_DIR:-dependency}"
 
-   r_absolutepath "${dependencydir}"
-   dependencydir="${RVAL}"
+   rootdir="${PWD}"
+   dependencydir="`mulle-sde dependency-dir`" || exit 1
 
    local RVAL
    local sdkpath
@@ -176,7 +129,7 @@ main()
 
    case "${MULLE_UNAME}" in
       darwin|linux)
-         RPATH_FLAGS="-Wl,-rpath '${dependencydir}/lib'"
+         RPATH_FLAGS="-Wl,-rpath '${dependencydir}/${configuration}/lib' -Wl,-rpath '${dependencydir}/lib'"
       ;;
    esac
 
@@ -192,11 +145,13 @@ main()
    local exename
    local directory
 
-   IFS="
-"
+   shell_enable_nullglob
+
+   #
+   # MEMO not sure why we do it so strangely here with the 6-9
+   #
    for testfile in `find [0-9][6-9]* -type f -name "*.m" -print`
    do
-   	IFS="${DEFAULTIFS}"
       (
          r_basename "${testfile}"
          srcname="${RVAL}"
@@ -208,21 +163,21 @@ main()
          log_info "${srcname}"
 
       	cd "${directory}" &&
-      	eval_exekutor mulle-clang -isystem "'${dependencydir}/include'" \
-               	            "-I'${rootdir}'" \
-                              "${sdkpath}" \
-                              -Wno-objc-root-class \
-                              -DOBJC_NO_GC \
-                              -D__OBJC2__ \
-               	            -std=gnu99 \
-               	            ${flags} \
-               	            -o "'${exename}'" \
-               	            "'${srcname}'" \
-               	            "${linkcommand}" &&
-   		eval_exekutor "LD_LIBRARY_PATH=''${dependencydir}/lib" "./'${exename}'"
+      	eval_exekutor mulle-clang -isystem "'${dependencydir}/${configuration}/include'" \
+                                   -isystem "'${dependencydir}/include'" \
+               	                 "-I'${rootdir}'" \
+                                   "${sdkpath}" \
+                                   -Wno-objc-root-class \
+                                   -DOBJC_NO_GC \
+                                   -D__OBJC2__ \
+               	                 -std=gnu99 \
+               	                 ${flags} \
+               	                 -o "'${exename}'" \
+               	                 "'${srcname}'" \
+               	                 "${linkcommand}" &&
+   		eval_exekutor "LD_LIBRARY_PATH='${dependencydir}/${configuration}/lib:${dependencydir}/lib'" "./'${exename}'"
       ) || exit 1
    done
-   IFS="${DEFAULTIFS}"
 }
 
 

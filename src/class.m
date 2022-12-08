@@ -103,7 +103,6 @@ static struct _mulle_objc_methodlist  *
 static void   class_copy_methodlists( struct _mulle_objc_class *dst,
                                       struct _mulle_objc_class *cls)
 {
-   struct mulle_concurrent_pointerarray             *array;
    struct mulle_concurrent_pointerarrayenumerator   rover;
    struct _mulle_objc_methodlist                    *list;
    struct _mulle_objc_methodlist                    *dup;
@@ -138,7 +137,6 @@ static struct _mulle_objc_ivarlist  *
 static void   infraclass_copy_ivarlists( struct _mulle_objc_infraclass *dst,
                                          struct _mulle_objc_infraclass *cls)
 {
-   struct mulle_concurrent_pointerarray             *array;
    struct mulle_concurrent_pointerarrayenumerator   rover;
    struct _mulle_objc_ivarlist                      *list;
    struct _mulle_objc_ivarlist                      *dup;
@@ -173,7 +171,6 @@ static struct _mulle_objc_propertylist  *
 static void   infraclass_copy_propertylists( struct _mulle_objc_infraclass *dst,
                                              struct _mulle_objc_infraclass *cls)
 {
-   struct mulle_concurrent_pointerarray             *array;
    struct mulle_concurrent_pointerarrayenumerator   rover;
    struct _mulle_objc_propertylist                  *list;
    struct _mulle_objc_propertylist                  *dup;
@@ -386,19 +383,19 @@ Class   class_setSuperclass( Class cls, Class superclass)
 /*
  *
  */
-static mulle_objc_walkcommand_t  count_classes( struct _mulle_objc_universe *universe,
-                                                void *p,
-                                                enum mulle_objc_walkpointertype_t type,
-                                                char *key,
-                                                void *parent,
-                                                void *userinfo)
-{
-    int   *count;
-
-    count = userinfo;
-    ++*count;
-    return( mulle_objc_walk_ok);
-}
+//static mulle_objc_walkcommand_t  count_classes( struct _mulle_objc_universe *universe,
+//                                                void *p,
+//                                                enum mulle_objc_walkpointertype_t type,
+//                                                char *key,
+//                                                void *parent,
+//                                                void *userinfo)
+//{
+//    int   *count;
+//
+//    count = userinfo;
+//    ++*count;
+//    return( mulle_objc_walk_ok);
+//}
 
 struct copy_class_info
 {
@@ -534,10 +531,6 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
 
 Ivar   class_getClassVariable( Class cls, char *name)
 {
-   mulle_objc_ivarid_t                         ivarid;
-   struct mulle_concurrent_hashmapenumerator   rover;
-   char                                        *s;
-
    if( ! cls || ! name || _mulle_objc_class_is_metaclass( (struct _mulle_objc_class *) cls))
       return( NULL);
 
@@ -604,7 +597,6 @@ static IMP  _class_replaceMethod( Class cls, SEL sel, IMP imp, char *types, BOOL
 {
    struct _mulle_objc_universe     *universe;
    struct _mulle_objc_descriptor   *desc;
-   BOOL                            flag;
    Method                          m;
    IMP                             old;
 
@@ -876,7 +868,6 @@ static mulle_objc_walkcommand_t
 Method   *class_copyMethodList( Class cls, unsigned int *outCount)
 {
    Method                    *result;
-   Method                    *p;
    unsigned int              count;
    struct method_copy_ctxt   ctxt;
 
@@ -961,7 +952,6 @@ static int   compare_ivar_by_offset( const void *a, const void *b)
 Ivar   *class_copyIvarList( Class cls, unsigned int *outCount)
 {
    Ivar                    *result;
-   Ivar                    *p;
    unsigned int            count;
    struct ivar_copy_ctxt   ctxt;
 
@@ -1040,8 +1030,7 @@ static mulle_objc_walkcommand_t
 
 objc_property_t   *class_copyPropertyList( Class cls, unsigned int *outCount)
 {
-   objc_property_t            *result;
-   objc_property_t            *p;
+   objc_property_t             *result;
    unsigned int                count;
    struct property_copy_ctxt   ctxt;
 
@@ -1119,7 +1108,6 @@ static mulle_objc_walkcommand_t
 PROTOCOL   *class_copyProtocolList( Class cls, unsigned int *outCount)
 {
    PROTOCOL                       *result;
-   PROTOCOL                       *p;
    unsigned int                   count;
    struct protocol_copy_ctxt      ctxt;
    struct _mulle_objc_classpair   *pair;

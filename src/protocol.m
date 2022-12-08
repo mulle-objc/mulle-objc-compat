@@ -121,8 +121,6 @@ mulle_objc_walkcommand_t   copy_protocol( struct _mulle_objc_universe  *universe
 Protocol **objc_copyProtocolList( unsigned int *outCount)
 {
    struct _mulle_objc_universe  *universe;
-   mulle_objc_protocolid_t      protocolid;
-   Protocol                     *proto;
    unsigned int                 n;
    Protocol                     **list;
    struct protocol_copy_ctxt    ctxt;

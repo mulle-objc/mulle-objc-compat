@@ -13,7 +13,6 @@ SEL   sel_registerName( char *str)
    mulle_objc_methodid_t          methodid;
    struct _mulle_objc_descriptor  *desc;
    struct _mulle_objc_descriptor  *dup;
-   struct _mulle_objc_descriptor  tmp;
    size_t                         size;
    unsigned int                   n;
    static char  *fake_signatures[ 16] =
