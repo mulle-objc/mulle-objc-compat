@@ -30,10 +30,7 @@ static void   strrangecpy( char *dst, size_t dst_len, char *src, struct type_ran
 
 static struct type_range  _signature_findTypeRange_skip( char *start, unsigned int skip)
 {
-   char                        *next;
-   size_t                       len;
    char                         *s;
-   char                         offset;
    struct type_range            range;
    struct mulle_objc_typeinfo   info;
 
@@ -60,7 +57,6 @@ static struct type_range  _signature_findTypeRange_skip( char *start, unsigned i
 // skip 3: arg 0
 static void  _signature_getType_skip( char *s, unsigned int skip, char *dst, size_t dst_len)
 {
-   size_t              len;
    struct type_range   range;
 
    range = _signature_findTypeRange_skip( s, skip);

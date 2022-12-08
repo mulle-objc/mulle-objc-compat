@@ -84,8 +84,6 @@ static inline struct objc_method_description * method_getDescription( Method m)
 // hmm, do this only for setup ?
 static inline IMP   method_setImplementation( Method m, IMP imp)
 {
-   mulle_functionpointer_t  old;
-
    if( ! m || ! imp)
       return( NULL);
    return( (IMP) _mulle_atomic_functionpointer_set( &m->implementation,
