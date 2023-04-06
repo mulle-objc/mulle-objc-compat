@@ -459,6 +459,7 @@ Class  *objc_copyClassList( unsigned int *outCount)
     return( list);
 }
 
+
 /*
  *
  */
@@ -587,6 +588,7 @@ static void   _class_addMethod( Class cls,
    // this invalidates
    mulle_objc_class_add_methodlist( (struct _mulle_objc_class *) cls, list);
 }
+
 
 /*
  * the API does not provide a name just a SEL, this is not enough to

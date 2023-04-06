@@ -1,4 +1,4 @@
-cmake_minimum_required( VERSION 3.15)
+cmake_minimum_required( VERSION 3.14)
 
 project( mulle-objc-compat C)
 
@@ -21,8 +21,8 @@ include( Files)
 
 if( HEADERS_PHASE)
    install( FILES ${INSTALL_PUBLIC_HEADERS}  DESTINATION "include/mulle-objc-compat")
-   install( FILES ${INSTALL_PRIVATE_HEADERS} DESTINATION "include/mulle-objc-compat/private")
-   install( FILES ${CMAKE_INCLUDES}          DESTINATION "include/mulle-objc-compat/cmake")
+   install( FILES ${INSTALL_PRIVATE_HEADERS} DESTINATION "include/mulle-objc-compat")
+   install( FILES ${INSTALL_CMAKE_INCLUDES}          DESTINATION "include/mulle-objc-compat/cmake")
    install( FILES ${OBJC_HEADERS}            DESTINATION "include/objc")
 
    # short cut out
