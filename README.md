@@ -10,21 +10,21 @@ If you can get by with the limited set of functions, these functions are
 preferable to use over their mulle-objc counterparts for the sake of portability
 and familiarity.
 
-
-| Release Version
-|-----------------------------------
-| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/mulle-objc-compat.svg) [![Build Status](https://github.com/mulle-objc/mulle-objc-compat/workflows/CI/badge.svg?branch=release)](//github.com/mulle-objc/mulle-objc-compat/actions)
-
+| Release Version                                       | Release Notes
+|-------------------------------------------------------|--------------
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag//mulle-objc-compat.svg?branch=release) [![Build Status](https://github.com//mulle-objc-compat/workflows/CI/badge.svg?branch=release)](//github.com//mulle-objc-compat/actions)| [RELEASENOTES](RELEASENOTES.md) |
 
 
-> #### Mental model
->
-> This library
->
-> * does not include any other runtime than mulle-objc-runtime.
-> * does not define any functionality that is not part of the Apple runtime
-> * does not implement everything that's in the Apple runtime
->
+
+
+## Mental model
+
+This library
+
+* does not include any other runtime than mulle-objc-runtime.
+* does not define any functionality that is not part of the Apple runtime
+* does not implement everything that's in the Apple runtime
+
 
 ## Limitations
 
@@ -34,17 +34,60 @@ and familiarity.
 * The library must be compiled with mulle-clang (since the multiverse changes)
 
 
+
+## Requirements
+
+|   Requirement         | Release Version  | Description
+|-----------------------|------------------|---------------
+| [MulleObjC](https://github.com/mulle-objc/MulleObjC) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag//.svg) [![Build Status](https://github.com///workflows/CI/badge.svg?branch=release)](https://github.com///actions/workflows/mulle-sde-ci.yml) | 💎 A collection of Objective-C root classes for mulle-objc
+
+
 ## Add
 
-This is project is a [mulle-sde](//mulle-sde.github.io/) project.
-Add it with:
+Use [mulle-sde](//github.com/mulle-sde) to add mulle-objc-compat to your project:
 
 ``` sh
-mulle-sde dependency add --objc --github mulle-objc mulle-objc-compat
+mulle-sde add github:/
+```
+
+To only add the sources of mulle-objc-compat with dependency
+sources use [clib](https://github.com/clibs/clib):
+
+
+``` sh
+clib install --out src/ /
+```
+
+Add `-isystem src/` to your `CFLAGS` and compile all the sources that were downloaded with your project.
+
+
+## Install
+
+### Install with mulle-sde
+
+Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-objc-compat and all dependencies:
+
+``` sh
+mulle-sde install --prefix /usr/local \
+   https://github.com///archive/latest.tar.gz
+```
+
+### Manual Installation
+
+Install the [Requirements](#Requirements) and then
+install **mulle-objc-compat** with [cmake](https://cmake.org):
+
+``` sh
+cmake -B build \
+      -DCMAKE_INSTALL_PREFIX=/usr/local \
+      -DCMAKE_PREFIX_PATH=/usr/local \
+      -DCMAKE_BUILD_TYPE=Release &&
+cmake --build build --config Release &&
+cmake --install build --config Release
 ```
 
 ## Author
 
-[Nat!](//www.mulle-kybernetik.com/weblog) for
-[Mulle kybernetiK](//www.mulle-kybernetik.com) and
-[Codeon GmbH](//www.codeon.de)
+[Nat!](https://mulle-kybernetik.com/weblog) for Mulle kybernetiK
+
+
