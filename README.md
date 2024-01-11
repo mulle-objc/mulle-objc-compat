@@ -10,9 +10,12 @@ If you can get by with the limited set of functions, these functions are
 preferable to use over their mulle-objc counterparts for the sake of portability
 and familiarity.
 
+
+
 | Release Version                                       | Release Notes
 |-------------------------------------------------------|--------------
-| ![Mulle kybernetiK tag](https://img.shields.io/github/tag//mulle-objc-compat.svg?branch=release) [![Build Status](https://github.com//mulle-objc-compat/workflows/CI/badge.svg?branch=release)](//github.com//mulle-objc-compat/actions)| [RELEASENOTES](RELEASENOTES.md) |
+| ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/mulle-objc-compat.svg?branch=release) [![Build Status](https://github.com/mulle-objc/mulle-objc-compat/workflows/CI/badge.svg?branch=release)](//github.com/mulle-objc/mulle-objc-compat/actions) | [RELEASENOTES](RELEASENOTES.md) |
+
 
 
 
@@ -35,6 +38,12 @@ This library
 
 
 
+### You are here
+
+![Overview](overview.dot.svg)
+
+
+
 ## Requirements
 
 |   Requirement         | Release Version  | Description
@@ -44,10 +53,17 @@ This library
 
 ## Add
 
+**This project is a component of the [mulle-core](//github.com/mulle-core/mulle-core) library. As such you usually will *not* add or install it
+individually, unless you specifically do not want to link against
+`mulle-core`.**
+
+
+### Add as an individual component
+
 Use [mulle-sde](//github.com/mulle-sde) to add mulle-objc-compat to your project:
 
 ``` sh
-mulle-sde add github:/
+mulle-sde add github:mulle-objc/mulle-objc-compat
 ```
 
 To only add the sources of mulle-objc-compat with dependency
@@ -55,10 +71,10 @@ sources use [clib](https://github.com/clibs/clib):
 
 
 ``` sh
-clib install --out src/ /
+clib install --out src/mulle-objc mulle-objc/mulle-objc-compat
 ```
 
-Add `-isystem src/` to your `CFLAGS` and compile all the sources that were downloaded with your project.
+Add `-isystem src/mulle-objc` to your `CFLAGS` and compile all the sources that were downloaded with your project.
 
 
 ## Install
@@ -86,8 +102,10 @@ cmake --build build --config Release &&
 cmake --install build --config Release
 ```
 
+
 ## Author
 
-[Nat!](https://mulle-kybernetik.com/weblog) for Mulle kybernetiK
+[Nat!](https://mulle-kybernetik.com/weblog) for Mulle kybernetiK  
+
 
 
