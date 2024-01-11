@@ -22,7 +22,7 @@ int main()
     Class classes[CLASSCOUNT];
     for (i = 0; i < CLASSCOUNT; i++) {
         char *classname;
-        asprintf(&classname, "GrP_class_%d", i);
+        mulle_asprintf(&classname, "GrP_class_%d", i);
         classes[i] = objc_allocateClassPair(root, classname, 0);
         objc_registerClassPair(classes[i]);
         free(classname);
@@ -31,7 +31,7 @@ int main()
     SEL selectors[SELCOUNT];
     for (i = 0; i < SELCOUNT; i++) {
         char *selname;
-        asprintf(&selname, "GrP_sel_%d", i);
+        mulle_asprintf(&selname, "GrP_sel_%d", i);
         selectors[i] = sel_registerName(selname);
         free(selname);
     }

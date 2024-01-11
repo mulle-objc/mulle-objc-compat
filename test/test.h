@@ -75,7 +75,7 @@ static inline void fail(const char *msg, ...)
 {
     if (msg) {
         char *msg2;
-        asprintf(&msg2, "BAD: %s\n", msg);
+        mulle_asprintf(&msg2, "BAD: %s\n", msg);
         va_list v;
         va_start(v, msg);
         vfprintf(stderr, msg2, v);
@@ -116,7 +116,7 @@ static inline void testprintf(const char *msg, ...)
     // VERBOSE=1 prints test harness info only
     if (msg  &&  verbose >= 2) {
         char *msg2;
-        asprintf(&msg2, "VERBOSE: %s", msg);
+        mulle_asprintf(&msg2, "VERBOSE: %s", msg);
         va_list v;
         va_start(v, msg);
         vfprintf(stderr, msg2, v);
@@ -132,7 +132,7 @@ static inline void testwarn(const char *msg, ...)
 {
     if (msg) {
         char *msg2;
-        asprintf(&msg2, "WARN: %s\n", msg);
+        mulle_asprintf(&msg2, "WARN: %s\n", msg);
         va_list v;
         va_start(v, msg);
         vfprintf(stderr, msg2, v);
