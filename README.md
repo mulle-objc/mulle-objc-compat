@@ -48,7 +48,7 @@ This library
 
 |   Requirement         | Release Version  | Description
 |-----------------------|------------------|---------------
-| [MulleObjC](https://github.com/mulle-objc/MulleObjC) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag//.svg) [![Build Status](https://github.com///workflows/CI/badge.svg?branch=release)](https://github.com///actions/workflows/mulle-sde-ci.yml) | 💎 A collection of Objective-C root classes for mulle-objc
+| [MulleObjC](https://github.com/mulle-objc/MulleObjC) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/MulleObjC.svg) [![Build Status](https://github.com/mulle-objc/MulleObjC/workflows/CI/badge.svg?branch=release)](https://github.com/mulle-objc/MulleObjC/actions/workflows/mulle-sde-ci.yml) | 💎 A collection of Objective-C root classes for mulle-objc
 
 
 ## Add
@@ -80,7 +80,7 @@ Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-objc-compat a
 
 ``` sh
 mulle-sde install --prefix /usr/local \
-   https://github.com///archive/latest.tar.gz
+   https://github.com/mulle-objc/mulle-objc-compat/archive/latest.tar.gz
 ```
 
 ### Manual Installation
