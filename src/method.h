@@ -29,10 +29,13 @@ struct objc_method_description
  */
 static inline id   method_invoke( id receiver, Method m, void *_param)
 {
-   IMP   imp;
+   mulle_objc_implementation_t   imp;
 
-   imp = (IMP) _mulle_objc_method_get_implementation( m);
-   return( (*imp)( receiver, _mulle_objc_method_get_methodid( m), _param));
+   imp = _mulle_objc_method_get_implementation( m);
+   return( mulle_objc_implementation_invoke( imp,
+                                             receiver,
+                                             _mulle_objc_method_get_methodid( m),
+                                             _param));
 }
 
 

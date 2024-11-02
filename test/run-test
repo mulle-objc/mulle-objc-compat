@@ -93,6 +93,10 @@ main()
             configuration="Debug"
          ;;
 
+         --keep-exe)
+            OPTION_KEEP_EXE='YES'
+         ;;
+
          --)
             break
          ;;

@@ -59,7 +59,7 @@ SEL   sel_registerName( char *str)
       _mulle_objc_sprint_untypedsignature( dup->signature, size, n);
    }
 
-   desc = _mulle_objc_universe_register_descriptor_nofail( universe, dup);
+   desc = _mulle_objc_universe_register_descriptor_nofail( universe, dup, NULL, NULL);
    if( desc != dup)
    {
       // collision

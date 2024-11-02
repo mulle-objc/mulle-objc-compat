@@ -2,7 +2,7 @@
 #define mulle_objc_compat_include_h__
 
 /* This is a central include file to keep dependencies out of the library
-   C files. It is usally included by .h files only.
+   C files. It is usually included by .h files only.
 
    The advantage is that now .c and .h files become motile. They can
    be moved to other projects and don't need to be edited. Also less typing...
@@ -23,8 +23,13 @@
 
 #ifndef __MULLE_OBJC__
 # define __MULLE_OBJC_TPS__
-# define __MULLE_OBJC_FMC__
-# define __MULLE_OBJC_UNIVERSNAME__   falballa
+# define __MULLE_OBJC_FCS__
+# ifdef DEBUG
+#  define __MULLE_OBJC_TAO__
+# else
+#  define __MULLE_OBJC_NO_TAO__
+# endif
+# define __MULLE_OBJC_UNIVERSENAME__   falballa
 #endif
 
 // #include "_mulle-objc-compat-include.h"
