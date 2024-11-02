@@ -61,7 +61,7 @@ void   objc_registerClassPair( Class infra)
    mulle_objc_infraclass_add_ivarlist_nofail( infra, NULL);
    mulle_objc_infraclass_add_propertylist_nofail( infra, NULL);
 
-   mulle_objc_universe_add_infraclass_nofail( universe, infra);
+   mulle_objc_universe_register_infraclass_nofail( universe, infra);
 }
 
 
@@ -362,15 +362,32 @@ Class   objc_getRequiredClass( char *name)
 //
 Class   class_setSuperclass( Class cls, Class superclass)
 {
-   struct _mulle_objc_class      *old;
-   struct _mulle_objc_universe   *universe;
+   struct _mulle_objc_infraclass  *old;
+   struct _mulle_objc_universe    *universe;
+   struct _mulle_objc_infraclass  *infra;
+   struct _mulle_objc_metaclass   *meta;
+   struct _mulle_objc_metaclass   *super_meta;
+   struct _mulle_objc_class       *super_meta_superclass;
 
    universe = MulleObjCGetUniverse();
    _mulle_objc_universe_lock( universe);
    {
-      old = _mulle_objc_class_get_superclass((struct _mulle_objc_class *) cls);
+      infra = (struct _mulle_objc_infraclass *) cls;
+      meta  = _mulle_objc_infraclass_get_metaclass( (struct _mulle_objc_infraclass *) cls);
+
+      old = _mulle_objc_infraclass_get_superclass( infra);
       _mulle_objc_class_set_superclass( (struct _mulle_objc_class *) cls,
-                                       (struct _mulle_objc_class *) superclass);
+                                        (struct _mulle_objc_class *) superclass);
+      _mulle_objc_class_set_superclassid( (struct _mulle_objc_class *) cls,
+                                          ((struct _mulle_objc_infraclass *) superclass)->base.classid);
+
+      super_meta            = _mulle_objc_infraclass_get_metaclass( (struct _mulle_objc_infraclass *) superclass);
+      super_meta_superclass =  super_meta ? &super_meta->base : &infra->base,
+
+      _mulle_objc_class_set_superclass( (struct _mulle_objc_class *) meta,
+                                        (struct _mulle_objc_class *) super_meta_superclass);
+      _mulle_objc_class_set_superclassid( (struct _mulle_objc_class *) infra,
+                                          ((struct _mulle_objc_metaclass *) super_meta_superclass)->base.classid);
 
       _mulle_objc_universe_invalidate_classcaches( universe, NULL);
    }
@@ -763,6 +780,7 @@ static BOOL
    proplist->properties[ 0].propertyid  = mulle_objc_propertyid_from_string( name);
    proplist->properties[ 0].name        = mulle_allocator_strdup( allocator, name);
    proplist->properties[ 0].signature   = s;
+   proplist->properties[ 0].getter      = mulle_objc_methodid_from_string( name);
 
    mulle_objc_universe_add_gift_nofail( universe, proplist->properties[ 0].name);
 
@@ -802,7 +820,7 @@ BOOL   class_addProtocol( Class cls, PROTOCOL protocol)
    struct _mulle_objc_universe       *universe;
    struct _mulle_objc_protocollist   *protolist;
    struct mulle_allocator            *allocator;
-
+   char                              *name;
 
    if( ! cls)
       return( NO);
@@ -818,9 +836,11 @@ BOOL   class_addProtocol( Class cls, PROTOCOL protocol)
    allocator = _mulle_objc_universe_get_allocator( universe);
    protolist = mulle_allocator_malloc( allocator, mulle_objc_sizeof_protocollist( 1));
 
+   // we probably don't it, unless we are debugging
+   name      = _mulle_objc_universe_describe_uniqueid( universe, protocol);
    protolist->n_protocols               = 1;
    protolist->protocols[ 0].protocolid  = protocol;
-   protolist->protocols[ 0].name        = "???";  // we don't and can't know it
+   protolist->protocols[ 0].name        = name;
 
    pair = _mulle_objc_infraclass_get_classpair( cls);
    mulle_objc_classpair_add_protocollist_nofail( pair, protolist);
@@ -943,7 +963,7 @@ static mulle_objc_walkcommand_t
 }
 
 
-static int   compare_ivar_by_offset( const void *a, const void *b)
+static int   compare_ivar_by_offset( void *a, void *b, void *thunk)
 {
    Ivar  aIvar = *(Ivar *) a;
    Ivar  bIvar = *(Ivar *) b;
@@ -983,7 +1003,7 @@ Ivar   *class_copyIvarList( Class cls, unsigned int *outCount)
                                          copy_ivar,
                                          &ctxt);
 
-      qsort( result, count, sizeof( Ivar), compare_ivar_by_offset);
+      mulle_qsort_r( result, count, sizeof( Ivar), compare_ivar_by_offset, NULL);
    }
 
    if( outCount)

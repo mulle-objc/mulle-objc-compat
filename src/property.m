@@ -245,13 +245,15 @@ objc_property_attribute_t *property_copyAttributeList( objc_property_t property,
 }
 
 
-
 /*
  * Property accessors...
  */
 id   objc_getProperty( id self, SEL _cmd, ptrdiff_t offset, BOOL atomic)
 {
-   return(  mulle_objc_object_get_property_value( self, _cmd, offset, atomic));
+   int   strategy;
+
+   strategy = atomic ? mulle_objc_property_accessor_atomic : 0;
+   return( mulle_objc_object_get_property_value( self, _cmd, offset, strategy));
 }
 
 
@@ -262,39 +264,49 @@ void   objc_setProperty( id self,
                          BOOL atomic,
                          signed char shouldCopy)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, atomic, shouldCopy);
+   int   strategy;
+
+   switch( shouldCopy)
+   {
+   case 0  : strategy = mulle_objc_property_accessor_autorelease;
+   default : strategy = mulle_objc_property_accessor_copy;
+   case 2  : strategy = mulle_objc_property_accessor_mutable_copy;
+   }
+   if( atomic)
+      strategy |= mulle_objc_property_accessor_atomic;
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, strategy);
 }
+
 
 void   objc_setProperty_nonatomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, NO, 0);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, mulle_objc_property_accessor_autorelease);
 }
+
 
 void   objc_setProperty_nonatomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, NO, 1);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, mulle_objc_property_accessor_copy);
 }
 
 
 void   objc_setProperty_atomic(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, YES, 0);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, mulle_objc_property_accessor_atomic | mulle_objc_property_accessor_autorelease);
 }
+
 
 void   objc_setProperty_atomic_copy(id self, SEL _cmd, id newValue, ptrdiff_t offset)
 {
-   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, YES, 1);
+   mulle_objc_object_set_property_value( self, _cmd, offset, (struct _mulle_objc_object *) newValue, mulle_objc_property_accessor_atomic | mulle_objc_property_accessor_copy);
 }
 
 
-// This entry point was designed wrong.  When used as a getter, src needs to be locked so that
-// if simultaneously used for a setter then there would be contention on src.
-// So we need two locks - one of which will be contended.
-void objc_copyStruct( void *dest,
-                      const void *src,
-                      ptrdiff_t size,
-                      BOOL atomic,
-                      BOOL hasStrong)
+void   objc_copyStruct( void *dest,
+                        const void *src,
+                        ptrdiff_t size,
+                        BOOL atomic,
+                        BOOL hasStrong)
 {
     if (atomic) {
        abort();

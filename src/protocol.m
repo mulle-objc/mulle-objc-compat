@@ -44,7 +44,7 @@ void  objc_registerProtocol( Protocol *proto)
       return;
 
    universe = MulleObjCGetUniverse();
-   _mulle_objc_universe_add_protocol( universe, proto);
+   _mulle_objc_universe_register_protocol( universe, proto);
 }
 
 
