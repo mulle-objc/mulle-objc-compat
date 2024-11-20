@@ -1,3 +1,11 @@
+## 0.21.0
+
+
+* fix up a test with missing getter, avoid two warnings (at least in debug)
+* improved `class_setSuperclass` now properly sets superclassid (for now)
+* adapted to changes in the mulle-objc-runtime
+
+
 ### 0.20.5
 
 * Various small improvements
