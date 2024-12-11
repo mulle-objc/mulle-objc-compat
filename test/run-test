@@ -60,10 +60,10 @@ EOF
 
 main()
 {
-   local flags
    local configuration
+   local releaseflags="-O3 -g -fno-objc-tao -DNDEBUG -DMULLE_TEST"
+   local debugflags="-O0 -g -fobjc-tao -DMULLE_TEST"
 
-   flags="-O0 -g -DMULLE_TEST"
    configuration="Debug"
 
    while [ $# -ne 0 ]
@@ -84,12 +84,10 @@ main()
          ;;
 
          --release)
-            flags="-O3 -g -DNDEBUG -DMULLE_TEST"
             configuration="Release"
          ;;
 
          --debug)
-            flags="-O0 -g -DMULLE_TEST"
             configuration="Debug"
          ;;
 
@@ -117,7 +115,6 @@ main()
 
    local dependencydir
    local rootdir
-
 
    rootdir="${PWD}"
    dependencydir="`mulle-sde dependency-dir`" || exit 1
@@ -150,6 +147,15 @@ main()
    local directory
 
    shell_enable_nullglob
+
+   local flags
+
+   flags="${debugflags}"
+   case "${configuration}" in
+      *[Rr]elease*)
+         flags="${releaseflags}"
+      ;;
+   esac
 
    #
    # MEMO not sure why we do it so strangely here with the 6-9
