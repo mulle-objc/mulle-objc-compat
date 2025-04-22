@@ -66,7 +66,8 @@ void   objc_registerClassPair( Class infra)
 
 
 //
-// don't do it, s
+// don't do it, in mulle-objc only a universe thats winding down
+// should remove classes
 //
 void   objc_disposeClassPair( Class cls)
 {
@@ -82,7 +83,7 @@ void   objc_disposeClassPair( Class cls)
    pair      = _mulle_objc_infraclass_get_classpair( cls);
 
    mulle_objc_universe_remove_infraclass( universe, cls);
-   mulle_objc_classpair_free( pair, allocator);
+   _mulle_objc_classpair_free( pair, allocator);
 }
 
 
