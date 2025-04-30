@@ -60,8 +60,8 @@ As long as your sources are using `#include "include-private.h"` and your header
 mulle-sde add github:mulle-objc/mulle-objc-compat
 ```
 
-To only add the sources of mulle-objc-compat with dependency
-sources use [clib](https://github.com/clibs/clib):
+To only add the sources of mulle-objc-compat with all the sources of its
+dependencies replace "github:" with [clib:](https://github.com/clibs/clib):
 
 ## Legacy adds
 
@@ -89,16 +89,7 @@ file).
 ### Add as subproject with cmake and git
 
 ``` bash
-git submodule add -f --name "mulle-core" \
-                            "https://github.com/mulle-core/mulle-core.git" \
-                            "stash/mulle-core"
-git submodule add -f --name "mulle-objc-runtime" \
-                            "https://github.com/mulle-objc/mulle-objc-runtime.git" \
-                            "stash/mulle-objc-runtime"
-git submodule add -f --name "mulle-objc-debug" \
-                            "https://github.com/mulle-objc/mulle-objc-debug.git" \
-                            "stash/mulle-objc-debug"
-git submodule add -f --name "mulle-objc-compat" \
+git submodule add  --name "mulle-objc-compat" \
                             "https://github.com/mulle-objc/mulle-objc-compat" \
                             "stash/mulle-objc-compat"
 git submodule update --init --recursive
@@ -106,20 +97,14 @@ git submodule update --init --recursive
 
 ``` cmake
 add_subdirectory( stash/mulle-objc-compat)
-add_subdirectory( stash/mulle-objc-debug)
-add_subdirectory( stash/mulle-objc-runtime)
-add_subdirectory( stash/mulle-core)
+add_subdirectory( stash/)
 
 target_link_libraries( ${PROJECT_NAME} PUBLIC mulle-objc-compat)
-target_link_libraries( ${PROJECT_NAME} PUBLIC mulle-objc-debug)
-target_link_libraries( ${PROJECT_NAME} PUBLIC mulle-objc-runtime)
-target_link_libraries( ${PROJECT_NAME} PUBLIC mulle-core)
+target_link_libraries( ${PROJECT_NAME} PUBLIC )
 ```
 
 
 ## Install
-
-### Install with mulle-sde
 
 Use [mulle-sde](//github.com/mulle-sde) to build and install mulle-objc-compat and all dependencies:
 
@@ -128,15 +113,30 @@ mulle-sde install --prefix /usr/local \
    https://github.com/mulle-objc/mulle-objc-compat/archive/latest.tar.gz
 ```
 
-### Manual Installation
+### Legacy Installation
 
-Install the [Requirements](#Requirements) and then
-install **mulle-objc-compat** with [cmake](https://cmake.org):
+
+#### Requirements
+
+Install all requirements
+
+| Requirements                                 | Description
+|----------------------------------------------|-----------------------
+| [MulleObjC](https://github.com/mulle-objc/MulleObjC)             | 💎 A collection of Objective-C root classes for mulle-objc
+
+#### Download & Install
+
+
+Download the latest [tar](https://github.com/mulle-objc/mulle-objc-compat/archive/refs/tags/latest.tar.gz) or [zip](https://github.com/mulle-objc/mulle-objc-compat/archive/refs/tags/latest.zip) archive and unpack it.
+
+Install **mulle-objc-compat** into `/usr/local` with [cmake](https://cmake.org):
 
 ``` sh
-cmake -B build \
-      -DCMAKE_INSTALL_PREFIX=/usr/local \
-      -DCMAKE_PREFIX_PATH=/usr/local \
+PREFIX_DIR="/usr/local"
+cmake -B build                               \
+      -DMULLE_SDK_PATH="${PREFIX_DIR}"       \
+      -DCMAKE_INSTALL_PREFIX="${PREFIX_DIR}" \
+      -DCMAKE_PREFIX_PATH="${PREFIX_DIR}"    \
       -DCMAKE_BUILD_TYPE=Release &&
 cmake --build build --config Release &&
 cmake --install build --config Release
