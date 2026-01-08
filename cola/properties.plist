@@ -3,6 +3,8 @@
    {
       description="🍏 Compatibility layer with Apple Objective-C runtime functions";
       domain="github";
+      language="c";
+      dialect="objc";
       name="mulle-objc-compat";
       user="mulle-objc";
       repo="mulle-objc-compat";

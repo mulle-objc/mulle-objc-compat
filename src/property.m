@@ -253,7 +253,7 @@ id   objc_getProperty( id self, SEL _cmd, ptrdiff_t offset, BOOL atomic)
    int   strategy;
 
    strategy = atomic ? mulle_objc_property_accessor_atomic : 0;
-   return( mulle_objc_object_get_property_value( self, _cmd, offset, strategy));
+   return( (id) mulle_objc_object_get_property_value( self, _cmd, offset, strategy));
 }
 
 
