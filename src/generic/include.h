@@ -33,7 +33,7 @@
 #endif
 
 // #include "_mulle-objc-compat-include.h"
-#ifdef MULLE_OBJC_COMPAT_BUILD
+#ifdef MULLE__OBJC__COMPAT_BUILD
 # define MULLE_OBJC_COMPAT_GLOBAL    MULLE_C_GLOBAL
 #else
 # if defined( MULLE_OBJC_COMPAT_INCLUDE_DYNAMIC) || (defined( MULLE_INCLUDE_DYNAMIC) && ! defined( MULLE_OBJC_COMPAT_INCLUDE_STATIC))

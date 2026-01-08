@@ -51,10 +51,23 @@ This library
 | [MulleObjC](https://github.com/mulle-objc/MulleObjC) | ![Mulle kybernetiK tag](https://img.shields.io/github/tag/mulle-objc/MulleObjC.svg) [![Build Status](https://github.com/mulle-objc/MulleObjC/workflows/CI/badge.svg?branch=release)](https://github.com/mulle-objc/MulleObjC/actions/workflows/mulle-sde-ci.yml) | 💎 A collection of Objective-C root classes for mulle-objc
 
 
+## Quickstart
+
+
+``` sh
+mulle-sde init -d my-project -m mulle-objc/objc-developer executable
+cd my-project
+mulle-sde vibecoding on
+mulle-sde run
+```
+
+You are done, skip the following "Add" step.
+
+
 ## Add
 
 Use [mulle-sde](//github.com/mulle-sde) to add mulle-objc-compat to your project.
-As long as your sources are using `#include "include-private.h"` and your headers use `#include "include.h"`, there will nothing more to do:
+As long as your sources are using `#import "import-private.h"` and your headers use `#import "import.h"`, there will nothing more to do:
 
 ``` sh
 mulle-sde add github:mulle-objc/mulle-objc-compat
@@ -66,7 +79,7 @@ dependencies replace "github:" with [clib:](https://github.com/clibs/clib):
 ## Legacy adds
 
 One common denominator is that you will likely have to add
-`#include <mulle-objc-compat/mulle-objc-compat.h>` to your source files.
+`#import <mulle-objc-compat/mulle-objc-compat.h>` to your source files.
 
 
 ### Add sources to your project with clib
