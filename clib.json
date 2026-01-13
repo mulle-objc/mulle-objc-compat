@@ -1,9 +1,9 @@
 {
    "name" : "mulle-objc-compat",
-   "version" : "0.20.3",
+   "version" : "0.21.3",
    "description" : "🍏 Compatibility layer with Apple Objective-C runtime functions",
    "keywords" : [],
-   "license" : "BSD-3-Clause",
+   "license" : "UNLICENSED",
    "repo" : "mulle-objc/mulle-objc-compat",
    "src" : [
       "src/class.h",
