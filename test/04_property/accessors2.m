@@ -15,7 +15,7 @@
 
 int main()
 {
-    long   oldRetainCount;
+    intptr_t   oldRetainCount;
     SEL _cmd = @selector(foo);
     Base *o = [Base new];
     ptrdiff_t offset = ivar_getOffset(class_getInstanceVariable([Base class], "ivar"));

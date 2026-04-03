@@ -63,6 +63,7 @@ main()
    local configuration
    local releaseflags="-O3 -g -fno-objc-tao -DNDEBUG -DMULLE_TEST"
    local debugflags="-O0 -g -fobjc-tao -DMULLE_TEST"
+   local platform="${MULLE_UNAME}"
 
    configuration="Debug"
 
@@ -90,6 +91,18 @@ main()
          --debug)
             configuration="Debug"
          ;;
+
+         --platform)
+            [ $# -eq 1 ] && usage
+            shift 1
+
+            platform="$1"
+         ;;
+
+         --debug)
+            configuration="Debug"
+         ;;
+
 
          --keep-exe)
             OPTION_KEEP_EXE='YES'
@@ -137,7 +150,7 @@ main()
 
    local linkcommand
 
-   linkcommand="`exekutor mulle-sde test linkorder --startup`" || exit 1
+   linkcommand="`exekutor mulle-sde test --platform "${platform}" link-args --output-format ld --startup`" || exit 1
 
    log_fluff "linkorder: ${linkcommand}"
 

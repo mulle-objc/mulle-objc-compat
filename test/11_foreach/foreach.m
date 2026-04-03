@@ -20,7 +20,7 @@ bool testHandwritten(const char *style, const char *test, const char *message, i
    state.state = 0;
    NSUInteger limit = [collection countByEnumeratingWithState:&state objects:buffer count:4];
    if (limit != 0) {
-        unsigned long mutationsPtr = *state.mutationsPtr;
+        NSUInteger mutationsPtr = *state.mutationsPtr;
         do {
             unsigned long innerCounter = 0;
             do {
