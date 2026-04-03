@@ -1,4 +1,5 @@
 # mulle-objc-compat Library Documentation for AI
+<!-- Keywords: compatibility, apple-runtime -->
 
 ## 1. Introduction & Purpose
 
