@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.13...99.99)
 
-project( mulle-objc-compat VERSION 0.21.3 LANGUAGES C)
+project( mulle-objc-compat VERSION 0.21.4 LANGUAGES C)
 
 
 # should be behind option but...
