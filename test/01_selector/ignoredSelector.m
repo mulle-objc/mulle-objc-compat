@@ -6,6 +6,8 @@
 #include <objc/message.h>
 #include <objc/objc-auto.h>
 
+#pragma clang diagnostic ignored "-Wobjc-root-class"
+
 static int state = 0;
 
 OBJC_ROOT_CLASS
