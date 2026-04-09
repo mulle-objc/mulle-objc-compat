@@ -4,6 +4,8 @@
 #include <objc/objc-runtime.h>
 #include <objc/objc-gdb.h>
 
+#pragma clang diagnostic ignored "-Wobjc-root-class"
+
 @interface Foo
 @end
 @implementation Foo

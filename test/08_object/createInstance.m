@@ -10,6 +10,8 @@ static BOOL auto_zone_is_valid_pointer(void *a, void *b) { return a||b; }
 #endif
 #include "test.h"
 
+#pragma clang diagnostic ignored "-Wobjc-root-class"
+
 OBJC_ROOT_CLASS
 @interface Super { @public id isa; } @end
 @implementation Super 

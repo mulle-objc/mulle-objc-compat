@@ -4,6 +4,8 @@
 #include <string.h>
 #include <objc/objc-runtime.h>
 
+#pragma clang diagnostic ignored "-Wobjc-root-class"
+
 OBJC_ROOT_CLASS
 @interface SuperIvars { 
     id isa;

@@ -4,6 +4,8 @@
 #include <string.h>
 #include <objc/objc-runtime.h>
 
+#pragma clang diagnostic ignored "-Wobjc-root-class"
+
 OBJC_ROOT_CLASS
 @interface SuperProps { id isa; int prop1; int prop2; } 
 @property int prop1;
