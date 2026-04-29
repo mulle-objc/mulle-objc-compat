@@ -17,6 +17,24 @@ export MULLE__OBJC__COMPAT_BRANCH="prerelease"
 
 
 #
+# MulleObjC-startup nodetype: ${MULLE_OBJC__STARTUP_NODETYPE:-tar}
+#
+export MULLE_OBJC__STARTUP_NODETYPE="git"
+
+
+#
+# MulleObjC-startup url: ${MULLE_OBJC__STARTUP_URL:-https://github.com/mulle-objc/MulleObjC-startup/archive/${MULLE_TAG}.tar.gz}
+#
+export MULLE_OBJC__STARTUP_URL="https://github.com/mulle-objc/MulleObjC-startup.git"
+
+
+#
+# MulleObjC-startup branch: ${MULLE_OBJC__STARTUP_BRANCH}
+#
+export MULLE_OBJC__STARTUP_BRANCH="prerelease"
+
+
+#
 # mulle-testallocator nodetype: ${MULLE__TESTALLOCATOR_NODETYPE:-tar}
 #
 export MULLE__TESTALLOCATOR_NODETYPE="git"

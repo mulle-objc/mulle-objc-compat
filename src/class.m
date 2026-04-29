@@ -224,16 +224,16 @@ static void  classpair_copy_categoryids( struct _mulle_objc_classpair *dst,
 }
 
 
-static void   classpair_copy_protocolclasses( struct _mulle_objc_classpair *dst,
-                                              struct _mulle_objc_classpair *pair)
+static void   classpair_copy_mixins( struct _mulle_objc_classpair *dst,
+                                     struct _mulle_objc_classpair *pair)
 {
-   struct _mulle_objc_protocolclassenumerator   rover;
-   struct _mulle_objc_infraclass                *infra;
+   struct _mulle_objc_mixinenumerator   rover;
+   struct _mulle_objc_infraclass        *infra;
 
-   rover = _mulle_objc_classpair_enumerate_protocolclasses( pair);
-   while( infra = _mulle_objc_protocolclassenumerator_next( &rover))
-      _mulle_objc_classpair_add_protocolclass( dst, infra);
-   _mulle_objc_protocolclassenumerator_done( &rover);
+   rover = _mulle_objc_classpair_enumerate_mixins( pair);
+   while( infra = _mulle_objc_mixinenumerator_next( &rover))
+      _mulle_objc_classpair_add_mixin( dst, infra);
+   _mulle_objc_mixinenumerator_done( &rover);
 }
 
 
@@ -293,7 +293,7 @@ Class   objc_duplicateClass( Class original, char *name, size_t extraBytes)
 
    classpair_copy_protocolids( pair, original_pair);
    classpair_copy_categoryids( pair, original_pair);
-   classpair_copy_protocolclasses( pair, original_pair);
+   classpair_copy_mixins( pair, original_pair);
 
    return( infra);
 }
