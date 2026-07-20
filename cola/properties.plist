@@ -8,7 +8,7 @@
       name="mulle-objc-compat";
       user="mulle-objc";
       repo="mulle-objc-compat";
-             version="0.21.4";
+             version="0.21.5";
 homepage="https://github.com/mulle-objc/mulle-objc-compat";
       license="UNLICENSED";
    };
