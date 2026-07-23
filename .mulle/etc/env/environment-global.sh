@@ -34,3 +34,9 @@ export MULLE_MATCH_TO_C_OBJC_HEADERS_FILE="DISABLE"
 export MULLE_MATCH_TO_CMAKE_RESOURCES_FILE="DISABLE"
 
 
+#
+#
+#
+export vibecoding="off"
+
+
