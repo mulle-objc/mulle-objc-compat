@@ -1,3 +1,37 @@
+//
+//  class.m
+//  mulle-objc-compat
+//
+//  Copyright (c) 2018 Nat! - Mulle kybernetiK.
+//  All rights reserved.
+//
+//
+//  Redistribution and use in source and binary forms, with or without
+//  modification, are permitted provided that the following conditions are met:
+//
+//  Redistributions of source code must retain the above copyright notice, this
+//  list of conditions and the following disclaimer.
+//
+//  Redistributions in binary form must reproduce the above copyright notice,
+//  this list of conditions and the following disclaimer in the documentation
+//  and/or other materials provided with the distribution.
+//
+//  Neither the name of Mulle kybernetiK nor the names of its contributors
+//  may be used to endorse or promote products derived from this software
+//  without specific prior written permission.
+//
+//  THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+//  AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+//  IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+//  ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+//  LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+//  CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+//  SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+//  INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN
+//  CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
+//  ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
+//  POSSIBILITY OF SUCH DAMAGE.
+//
 #include "class.h"
 
 #include "include-private.h"
@@ -22,17 +56,17 @@ Class   objc_allocateClassPair( Class superclass, char *name, size_t extraBytes)
    }
 
    // name must be strduped here for API compatibility
+   // mulle_objc_universe_strdup already gifts the allocation
    universe  = MulleObjCGetUniverse();
    name      = mulle_objc_universe_strdup( universe, name);
    classid   = mulle_objc_classid_from_string( name);
    classpair = mulle_objc_universe_new_classpair( universe, classid, name, 0, 0, superclass);
    if( ! classpair)
    {
-      mulle_allocator_free( _mulle_objc_universe_get_allocator( universe),
-                            name);
+      // name is already gifted by mulle_objc_universe_strdup, don't free it;
+      // the universe will free it at teardown
       return( Nil);
    }
-   mulle_objc_universe_add_gift_nofail( universe, name);
 
    return( mulle_objc_classpair_get_infraclass( classpair));
 }
@@ -67,20 +101,57 @@ void   objc_registerClassPair( Class infra)
 
 //
 // don't do it, in mulle-objc only a universe thats winding down
-// should remove classes
+// should remove classes.
 //
 void   objc_disposeClassPair( Class cls)
 {
-   struct _mulle_objc_universe    *universe;
-   struct _mulle_objc_classpair   *pair;
-   struct mulle_allocator         *allocator;
+   struct _mulle_objc_universe      *universe;
+   struct _mulle_objc_classpair     *pair;
+   struct _mulle_objc_ivarlist      *ivarlist;
+   struct _mulle_objc_propertylist  *proplist;
+   struct mulle_allocator           *allocator;
+   unsigned int                      n;
 
    if( ! cls)
       return;
 
    universe  = MulleObjCGetUniverse();
+
+   //
+   // This must only be called in a single-threaded context. The universe
+   // retaincount_1 is 0 when only the main thread holds the universe (no
+   // secondary threads have retained it). If it's not 0, other threads are
+   // active and disposing a class pair is unsafe — abort.
+   //
+   if( (intptr_t) _mulle_atomic_pointer_read( &universe->retaincount_1) != 0)
+   {
+      fprintf( stderr, "objc_disposeClassPair: universe retaincount_1 != 0, "
+                       "not single-threaded — aborting\n");
+      abort();
+   }
+
    allocator = _mulle_objc_universe_get_allocator( universe);
    pair      = _mulle_objc_infraclass_get_classpair( cls);
+
+   //
+   // Free ivarlists and propertylists that were allocated by class_addIvar
+   // and _class_addProperty. These are not gifted to the universe, so
+   // _mulle_objc_classpair_free won't free them.
+   // Skip the universe's empty sentinel lists.
+   //
+   n = mulle_concurrent_pointerarray_get_count( &cls->ivarlists);
+   mulle_concurrent_pointerarray_for_reverse( &cls->ivarlists, n, ivarlist)
+   {
+      if( ivarlist && ivarlist != &universe->empty_ivarlist)
+         mulle_allocator_free( allocator, ivarlist);
+   }
+
+   n = mulle_concurrent_pointerarray_get_count( &cls->propertylists);
+   mulle_concurrent_pointerarray_for_reverse( &cls->propertylists, n, proplist)
+   {
+      if( proplist && proplist != &universe->empty_propertylist)
+         mulle_allocator_free( allocator, proplist);
+   }
 
    mulle_objc_universe_remove_infraclass( universe, cls);
    _mulle_objc_classpair_free( pair, allocator);
@@ -527,7 +598,7 @@ BOOL   class_addIvar( Class cls, char *name, size_t size, uint8_t alignment, cha
 
    allocator = _mulle_objc_universe_get_allocator( universe);
 
-   ivarlist = mulle_allocator_malloc( allocator, mulle_objc_sizeof_ivarlist( 1));
+   ivarlist = mulle_allocator_calloc( allocator, 1, mulle_objc_sizeof_ivarlist( 1));
    ivarlist->n_ivars                        = 1;
    ivarlist->ivars[ 0].descriptor.ivarid    = mulle_objc_ivarid_from_string( name);
    ivarlist->ivars[ 0].descriptor.name      = mulle_allocator_strdup( allocator, name);
@@ -593,9 +664,9 @@ static void   _class_addMethod( Class cls,
    // if types exist and diverge
    if( types && types[ 0] && strcmp( desc->signature, types))
    {
+      // _mulle_objc_universe_strdup already gifts the allocation
       types = _mulle_objc_universe_strdup( universe, types);
       list->methods[ 0].descriptor.signature = types;
-      _mulle_objc_universe_add_gift( universe, types);
    }
    else
       list->methods[ 0].descriptor.signature = desc->signature;
@@ -776,7 +847,7 @@ static BOOL
       return( YES);
    }
 
-   proplist = mulle_allocator_malloc( allocator, mulle_objc_sizeof_propertylist( 1));
+   proplist = mulle_allocator_calloc( allocator, 1, mulle_objc_sizeof_propertylist( 1));
    proplist->n_properties               = 1;
    proplist->properties[ 0].propertyid  = mulle_objc_propertyid_from_string( name);
    proplist->properties[ 0].name        = mulle_allocator_strdup( allocator, name);
@@ -845,6 +916,7 @@ BOOL   class_addProtocol( Class cls, PROTOCOL protocol)
 
    pair = _mulle_objc_infraclass_get_classpair( cls);
    mulle_objc_classpair_add_protocollist_nofail( pair, protolist);
+   mulle_allocator_free( allocator, protolist);
    return( YES);
 }
 

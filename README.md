@@ -19,6 +19,11 @@ and familiarity.
 
 
 
+## Documentation & Guides
+
+* [API Summary](asset/dox/api/toc)
+
+
 
 ## Mental model
 
