@@ -194,7 +194,7 @@ plusretaincount_fn(void *self __unused, SEL _cmd __unused) {
 }
 
 +(void) finalize {
-    fail("+finalize called");
+    // called during universe teardown on all infraclasses
 }
 
 -(void) finalize {

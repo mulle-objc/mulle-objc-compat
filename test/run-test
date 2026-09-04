@@ -193,7 +193,7 @@ main()
                                    -Wno-objc-root-class \
                                    -DOBJC_NO_GC \
                                    -D__OBJC2__ \
-               	                 -std=gnu99 \
+               	                 -std=gnu11 \
                	                 ${flags} \
                	                 -o "'${exename}'" \
                	                 "'${srcname}'" \
