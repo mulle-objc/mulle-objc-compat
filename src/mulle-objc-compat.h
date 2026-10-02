@@ -39,7 +39,7 @@
  *
  *  version:  major, minor, patch
  */
-#define MULLE_OBJC_COMPAT_VERSION  ((0UL << 20) | (21 << 8) | 6)
+#define MULLE_OBJC_COMPAT_VERSION  ((0UL << 20) | (21 << 8) | 7)
 
 #include "runtime.h"
 #include "method.h"

@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 3.13...99.99)
 
-project( mulle-objc-compat VERSION 0.21.6 LANGUAGES C)
+project( mulle-objc-compat VERSION 0.21.7 LANGUAGES C)
 
 
 # should be behind option but...
@@ -48,8 +48,8 @@ endif()
 include( InstallLibrary)
 
 if( LINK_PHASE)
-   include( InstallCMakeInclude)
-   include( InstallCMakePackage)
+   include( AddSubdirectorySupport)
+   include( FindPackageSupport)
 endif() 
 
 include( FinalOutput OPTIONAL)
