@@ -1,6 +1,6 @@
 {
    "name" : "mulle-objc-compat",
-   "version" : "0.21.6",
+   "version" : "0.21.7",
    "description" : "🍏 Compatibility layer with Apple Objective-C runtime functions",
    "keywords" : [],
    "license" : "UNLICENSED",
