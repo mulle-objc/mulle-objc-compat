@@ -56,8 +56,8 @@ from the headers under `src/`.
 
 ### 3.1. `mulle-objc-compat.h` (umbrella header)
 
-- `#define MULLE_OBJC_COMPAT_VERSION ((0UL << 20) | (21 << 8) | 6)` — version
-  `0.21.6`, layout `(major << 20) | (minor << 8) | patch`.
+- `#define MULLE_OBJC_COMPAT_VERSION ((0UL << 20) | (21 << 8) | 7)` — version
+  `0.21.7`, layout `(major << 20) | (minor << 8) | patch`.
 - Includes, in order: `runtime.h`, `method.h`, `ivar.h`, `class.h`, `object.h`,
   `property.h`, `protocol.h`, `selector.h`.
 - Requires `mulle-objc-runtime` >= `0.16.0` (compile-time `#error` otherwise).
