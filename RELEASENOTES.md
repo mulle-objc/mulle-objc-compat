@@ -1,5 +1,10 @@
 ### 0.21.7
 
+feature: make test configuration selectable via `TEST_CONFIGURATION`
+
+* test/run-test honors the `TEST_CONFIGURATION` environment variable (defaulting to Debug) and forwards the chosen configuration to `mulle-sde dependency-dir` and `mulle-sde test link-args`
+* Added autotools (aclocal, automake, autoheader, autom4te, glibtoolize) to the tool environment
+
 
 
 feature: add proper CMake `add_subdirectory` and `find_package` consumer support
